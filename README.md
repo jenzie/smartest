@@ -1,2 +1,2 @@
-my-smart-little-computer
-========================
+Smartest - The Smartest Little Computer
+=======================================
