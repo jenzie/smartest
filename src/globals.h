@@ -1,10 +1,5 @@
 // globals.h
 //
-// Original version:	Warren Carithers, November 2000
-// Updates:
-//
-//	2001/12/10:	wrc, modified simulation control
-//
 // Extern declarations of global variables for the dummest little computer.
 
 #ifndef _GLOBALS_H

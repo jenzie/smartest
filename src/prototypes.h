@@ -1,10 +1,5 @@
 // prototypes.h
 //
-// Original version:	Warren Carithers, Novermber 2000
-// Updates:
-//
-//	2001/12/10:	wrc, expanded execute() implementation
-//
 // Function prototypes for the dummest little computer.
 
 #ifndef _PROTOTYPES_H

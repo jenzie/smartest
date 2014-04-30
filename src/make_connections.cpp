@@ -1,10 +1,5 @@
 // make_connections.C
 //
-// Original program:	Jim Heliotis, March 2000
-// Updates:
-//
-//	2000/11/29:	wrc, restructured code
-//
 // Component connection function.  At execution time, this will
 // connect all the CPU components according to the design of
 // the architecture.

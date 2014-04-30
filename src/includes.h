@@ -1,9 +1,6 @@
 // includes.h
 //
-// Original version:	Warren Carithers, Novermber 2000
-// Updates:
-//
-// Master include file for the dummest little computer.
+// Master include file for the smartest little computer.
 
 #ifndef _INCLUDES_H
 #define _INCLUDES_H

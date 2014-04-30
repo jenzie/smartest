@@ -1,18 +1,3 @@
-// dummest.C
-//
-// Original program:	Jim Heliotis, March 2000
-// Updates:
-//
-//	2000/11/29:	wrc, restructured code
-//
-
-// This is an implementation of a class example known as
-// "The Dummest Little Computer".  It shows how to use
-// some of the features of the "arch" kit.
-
-// The two instructions shown involve the accumulator.
-//   op code 0 = clear accumulator
-//   op code 1 = add memory to accumulator
 
 #include "includes.h"
 

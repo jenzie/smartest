@@ -1,10 +1,5 @@
 // fetch_into.C
 //
-// Original program:	Jim Heliotis, March 2000
-// Updates:
-//
-//	2000/11/29:	wrc, restructured code
-//
 // Move a word from the specified location in memory to the
 // indicated destination via a particular bus.
 

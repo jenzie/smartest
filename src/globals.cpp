@@ -1,12 +1,6 @@
 // globals.C
 //
-// Original program:	Jim Heliotis, March 2000
-// Updates:
-//
-//	2000/11/29:	wrc, restructured code
-//	2001/12/10:	wrc, modified simulation control
-//
-// Global variables for the dummest little computer.
+// Global variables for the smartest little computer.
 
 #include "includes.h"
 
