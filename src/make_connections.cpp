@@ -28,4 +28,50 @@ void make_connections() {
 	pc.connectsTo( abus.OUT() );
 	pc.connectsTo( m.READ() );
 
+	// Smartest Start
+
+	// Fetch
+	inst_mem.MAR().connectsTo( pc_bus.OUT() );
+	pc.connectsTo( pc_bus.IN() );
+	pc.connectsTo( pc_bus.OUT() );
+	for( int i = 0; i < 16; i++ ){
+		bpt_rbank[ i ]->connectsTo( pc_bus.IN() );
+	}
+	
+	fd_ir.connectsTo( pc_bus.OUT() );
+	
+	// Decode
+	fd_ir.connectsTo( offset_alu.OUT() );
+	for( int i = 0; i < 4; i++ ){
+		reg_file[ i ]->connectsTo( dx_bus[0]->IN() );
+		reg_file[ i ]->connectsTo( dx_bus[1]->IN() );
+		reg_file[ i ]->connectsTo( dx_bus[2]->IN() );
+		reg_file[ i ]->connectsTo( dx_bus[3]->IN() );
+		reg_file[ i ]->connectsTo( comp_alu.OP1() );
+		reg_file[ i ]->connectsTo( comp_alu.OP2() );
+	}
+	
+	// Execute
+	xm_alu_out.connectsTo( exec_alu.OUT() );
+	for( int i = 0; i < 3; i++ ){
+		xm_b.connectsTo( xm_bus[ i ]->OUT() );
+		dx_a.connectsTo( xm_bus[ i ]->IN() );
+		dx_b.connectsTo( xm_bus[ i ]->IN() );
+		dx_imm.connectsTo( xm_bus[ i ]->IN() );
+	}
+	
+	// Memory
+	mw_mdr.connectsTo( data_mem.READ() );
+	xm_b.connectsTo( data_mem.WRITE() );
+	for( int i = 0; i < 3; i++ ){
+		xm_alu_out.connectsTo( mw_bus[ i ]->IN() );
+		data_mem.MAR().connectsTo( mw_bus[ i ]->OUT() );		
+	}
+	
+	// Writeback
+	mw_alu_out.connectsTo( wd_bus.IN() );
+	mw_mdr.connectsTo( wd_bus.IN() );
+	for( int i = 0; i < 4; i++ ){
+		reg_file[ i ]->connectsTo( wd_bus.OUT() );
+	}
 }

@@ -12,5 +12,6 @@ void print_contents();
 void fetch_into( StorageObject &, Bus &, StorageObject & );
 void make_connections();
 void run_simulation( char * );
+void build_object_arrays();
 
 #endif

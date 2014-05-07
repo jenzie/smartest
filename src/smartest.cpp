@@ -18,8 +18,13 @@ int main ( int argc, char *argv[] ) {
 
 	try {
 
+		// Define our object arrays
+		build_object_arrays();
+	
+		// Connect all the Arch component together
 		make_connections();
 
+		// Begin the simulation of the Arch CPU
 		run_simulation( argv[1] );
 
 	}

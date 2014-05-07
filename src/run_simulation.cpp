@@ -24,14 +24,14 @@ void run_simulation( char *objfile ) {
 		// instruction fetch
 		fetch_into( pc, abus, mdr );
 
-		// Check for PC overflow
-		if(pc.value() == 0xfff){
+		// TODO: Check for PC overflow
+		if(false){
 			cout << endl << "MACHINE HALTED due to PC overflow" << endl << endl;
 			done = true;
 			break;
 		}
 		
-		printf("%03x:  %04x = ", pc.value(), mdr.value());
+		printf("%03lx:  %04lx = ", pc.value(), mdr.value());
 		
 		
 		// bump PC for next instruction
