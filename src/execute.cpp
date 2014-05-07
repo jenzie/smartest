@@ -33,23 +33,23 @@ void execute() {
 
 void fetch(){
 	
-	cout << "Fetch executing " << endl;
+	cout << "F\t" << endl;
 	pc_bus.IN().pullFrom( pc );
 	inst_mem.MAR().latchFrom( pc_bus.OUT() );
 }
 
 long decode(){
 
-	long opc = fd_ir.value();
+	long opc = fd_ir(DATA_BITS - 1, DATA_BITS - 4);
 	d_curr_opc = opc; // for second stage
 
-	cout << "Decode executing " << opc;
+	cout << "D\t" << opc;
 	
 	switch( opc ) {
 		case 0: // NOP
 			break;
 		case 1: // Add
-			cout << " Add";
+			cout << "\tAdd";
 	}
 	cout << endl;
 
@@ -61,7 +61,7 @@ long decode(){
 
 long execute( long opc ){
 
-	cout << "Execute executing " << opc << endl;
+	cout << "X\t" << opc << endl;
 
 	// swap out the previous opc and return it for the next stage.
 	long old_opc = x_prev_opc;
@@ -71,7 +71,7 @@ long execute( long opc ){
 
 long memory( long opc ){
 
-	cout << "Memory executing " << opc << endl;
+	cout << "M\t" << opc << endl;
 
 	// swap out the previous opc and return it for the next stage.
 	long old_opc = m_prev_opc;
@@ -81,34 +81,48 @@ long memory( long opc ){
 
 void writeback( long opc ){
 
-	cout << "Writeback executing " << opc << endl;
+	cout << "W\t" << opc << endl;
 }
 
 void fetch_second(){
 
+	cout << "F2\t";
 	inst_mem.read();
 	fd_ir.latchFrom( inst_mem.READ() );
 	pc.incr();
+	cout << endl;
 }
 
 void decode_second(){
+	
+	cout << "D2\t";
 
 	switch( d_curr_opc ) {
 		case 0: // NOP
 			break;
 		case 1: // Add
-			cout << " Add" << endl;
+			cout << "\tAdd";
 	}
+	cout << endl;
 }
 
 void execute_second(){
 
+	cout << "X2\t";
+	
+	cout << endl;
 }
 
 void memory_second(){
 
+	cout << "M2\t";
+	
+	cout << endl;
 }
 
 void writeback_second(){
 
+	cout << "W2\t";
+	
+	cout << endl;
 }
