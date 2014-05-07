@@ -18,7 +18,7 @@ void run_simulation( char *instobj, char *dataobj ) {
 	// step 3:  continue fetching, decoding, and executing instructions
 	// until we stop the simulation
 	int i = 0;
-	while( !done && !halt_inst && i++ < 7) {
+	while( !done && !halt_inst && i++ < 6) {
 
 		// TODO: Check for PC overflow
 		if(false){

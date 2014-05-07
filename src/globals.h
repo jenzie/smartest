@@ -14,11 +14,14 @@ extern bool done;		// is the simulation over?
 extern bool halt_inst;    // did we halt because of the halt instruction?
 
 // Previous OPC's for passing between stages of the pipeline
-extern long f_prev_opc;
 extern long d_prev_opc;
 extern long x_prev_opc;
 extern long m_prev_opc;
-extern long w_prev_opc;
+
+extern long d_curr_opc;
+extern long x_curr_opc;
+extern long m_curr_opc;
+extern long w_curr_opc;
 
 // Fetch
 extern long bpt_ibank[16];

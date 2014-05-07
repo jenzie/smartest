@@ -28,18 +28,30 @@ void execute() {
 	memory_second();
 	writeback_second();
 	Clock::tick();
+	cout << endl;
 }
 
 void fetch(){
 	
 	cout << "Fetch executing " << endl;
+	pc_bus.IN().pullFrom( pc );
+	inst_mem.MAR().latchFrom( pc_bus.OUT() );
 }
 
 long decode(){
 
-	long opc = 1;
+	long opc = fd_ir.value();
+	d_curr_opc = opc; // for second stage
 
-	cout << "Decode executing " << opc << endl;
+	cout << "Decode executing " << opc;
+	
+	switch( opc ) {
+		case 0: // NOP
+			break;
+		case 1: // Add
+			cout << " Add";
+	}
+	cout << endl;
 
 	// swap out the previous opc and return it for the next stage.
 	long old_opc = d_prev_opc;
@@ -74,10 +86,19 @@ void writeback( long opc ){
 
 void fetch_second(){
 
+	inst_mem.read();
+	fd_ir.latchFrom( inst_mem.READ() );
+	pc.incr();
 }
 
 void decode_second(){
 
+	switch( d_curr_opc ) {
+		case 0: // NOP
+			break;
+		case 1: // Add
+			cout << " Add" << endl;
+	}
 }
 
 void execute_second(){

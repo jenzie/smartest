@@ -17,10 +17,10 @@ void make_connections() {
 		bpt_rbank[ i ]->connectsTo( pc_bus.IN() );
 	}
 	
-	fd_ir.connectsTo( pc_bus.OUT() );
+	fd_ir.connectsTo( inst_mem.READ() );
 	
 	// Decode
-	fd_ir.connectsTo( offset_alu.OUT() );
+	fd_ir.connectsTo( offset_alu.OP1() );
 	for( int i = 0; i < 4; i++ ){
 		reg_file[ i ]->connectsTo( dx_bus[0]->IN() );
 		reg_file[ i ]->connectsTo( dx_bus[1]->IN() );
