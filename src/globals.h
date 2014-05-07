@@ -13,6 +13,13 @@ extern const unsigned int DATA_BITS; // 12-bit unit size
 extern bool done;		// is the simulation over?
 extern bool halt_inst;    // did we halt because of the halt instruction?
 
+// Previous OPC's for passing between stages of the pipeline
+extern long f_prev_opc;
+extern long d_prev_opc;
+extern long x_prev_opc;
+extern long m_prev_opc;
+extern long w_prev_opc;
+
 // Fetch
 extern long bpt_ibank[16];
 extern StorageObject** bpt_rbank;

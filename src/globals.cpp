@@ -40,6 +40,12 @@ BusALU alu( "Adder", DATA_BITS );           // arithmetic logic unit
 bool done ( false );		// is the simulation over?
 bool halt_inst ( false );    // did we halt because of the halt instruction?
 
+long f_prev_opc( 0 );
+long d_prev_opc( 0 );
+long x_prev_opc( 0 );
+long m_prev_opc( 0 );
+long w_prev_opc( 0 );
+
 // Start Smartest
 
 Memory inst_mem( "Inst_Memory", ADDR_BITS, DATA_BITS );
