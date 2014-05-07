@@ -9,9 +9,8 @@ void clear_ac();
 void add_to_ac();
 void execute();
 void print_contents(); 
-void fetch_into( StorageObject &, Bus &, StorageObject & );
 void make_connections();
-void run_simulation( char * );
+void run_simulation( char *, char * );
 void build_object_arrays();
 
 #endif

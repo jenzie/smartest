@@ -9,8 +9,8 @@ int main ( int argc, char *argv[] ) {
 
 	// make sure we've been given an object file name
 
-	if( argc != 2 ) {
-		cerr << "Usage:  " << argv[0] << " object-file-name\n\n";
+	if( argc != 3 ) {
+		cerr << "Usage:  " << argv[0] << " inst-obj data-obj\n\n";
 		exit( 1 );
 	}
 
@@ -25,7 +25,7 @@ int main ( int argc, char *argv[] ) {
 		make_connections();
 
 		// Begin the simulation of the Arch CPU
-		run_simulation( argv[1] );
+		run_simulation( argv[1], argv[2] );
 
 	}
 

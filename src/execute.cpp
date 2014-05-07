@@ -16,7 +16,3 @@ void execute() {
 
 	Clock::tick();
 }
-
-void print_contents() {
-	printf(" %03lx   AC=%04lx", ir( DATA_BITS-4, 0 ), ac.value());
-}

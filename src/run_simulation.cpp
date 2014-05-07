@@ -5,24 +5,22 @@
 #include <cstdio>
 #include "includes.h"
 
-void run_simulation( char *objfile ) {
+void run_simulation( char *instobj, char *dataobj ) {
 
 	// step 1:  load the object file
 
-	m.load( objfile );
+	inst_mem.load( instobj );
+	data_mem.load( dataobj );
 
 	// step 2:  set the entry point
 
-	pc.latchFrom( m.READ() );
+	pc.latchFrom( inst_mem.READ() );
 	Clock::tick();
 
 	// step 3:  continue fetching, decoding, and executing instructions
 	// until we stop the simulation
 
 	while( !done && !halt_inst) {
-
-		// instruction fetch
-		fetch_into( pc, abus, mdr );
 
 		// TODO: Check for PC overflow
 		if(false){
@@ -31,21 +29,9 @@ void run_simulation( char *objfile ) {
 			break;
 		}
 		
-		printf("%03lx:  %04lx = ", pc.value(), mdr.value());
-		
-		
-		// bump PC for next instruction
-		pc.incr();
-		Clock::tick();
 
-		// move instruction into IR
-		dbus.IN().pullFrom( mdr );
-		ir.latchFrom( dbus.OUT() );
-		Clock::tick();
-
-		// decode and execute
+		// Move instructions through the pipeline
 		execute();
-		cout << endl;
 	}
 	
 	if( halt_inst ) {

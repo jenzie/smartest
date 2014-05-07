@@ -8,28 +8,6 @@
 
 void make_connections() {
 
-	m.MAR().connectsTo( abus.OUT() );
-
-	mdr.connectsTo( m.WRITE() );
-	mdr.connectsTo( m.READ() );
-	mdr.connectsTo( dbus.IN() );
-	mdr.connectsTo( dbus.OUT() );
-	mdr.connectsTo( alu.OP2() );
-
-	ir.connectsTo( abus.IN() );
-	ir.connectsTo( dbus.OUT() );
-
-	ac.connectsTo( dbus.IN() );
-	ac.connectsTo( dbus.OUT() );
-	ac.connectsTo( alu.OP1() );
-	ac.connectsTo( alu.OUT() );
-
-	pc.connectsTo( abus.IN() );
-	pc.connectsTo( abus.OUT() );
-	pc.connectsTo( m.READ() );
-
-	// Smartest Start
-
 	// Fetch
 	inst_mem.MAR().connectsTo( pc_bus.OUT() );
 	pc.connectsTo( pc_bus.IN() );

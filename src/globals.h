@@ -10,19 +10,8 @@
 extern const unsigned int ADDR_BITS; // 8-bit address => 256 units of memory
 extern const unsigned int DATA_BITS; // 12-bit unit size
 
-extern Bus abus; // bus to carry memory addresses
-extern Bus dbus; // bus to carry data and instructions
-
-extern StorageObject ir;  // instruction register
-extern Counter mdr; 	  // memory data register
-extern Clearable ac;      // accumulator
-extern Memory m;          // primary memory
-extern BusALU alu;        // arithmetic logic unit
-
-extern bool done;	  			// is the simulation over?
-extern bool halt_inst;    		// did we halt because of the halt instruction?
-
-// Smartest Start
+extern bool done;		// is the simulation over?
+extern bool halt_inst;    // did we halt because of the halt instruction?
 
 // Fetch
 extern long bpt_ibank[16];
