@@ -12,6 +12,7 @@ void make_connections() {
 	inst_mem.MAR().connectsTo( pc_bus.OUT() );
 	pc.connectsTo( pc_bus.IN() );
 	pc.connectsTo( pc_bus.OUT() );
+	pc.connectsTo( inst_mem.READ() );
 	for( int i = 0; i < 16; i++ ){
 		bpt_rbank[ i ]->connectsTo( pc_bus.IN() );
 	}

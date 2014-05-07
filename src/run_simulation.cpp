@@ -1,6 +1,6 @@
 // run_simulation.C
 //
-// Primary execution loop for the dummest little computer simulator.
+// Primary execution loop for the smartest little computer simulator.
 
 #include <cstdio>
 #include "includes.h"
@@ -8,19 +8,17 @@
 void run_simulation( char *instobj, char *dataobj ) {
 
 	// step 1:  load the object file
-
 	inst_mem.load( instobj );
 	data_mem.load( dataobj );
 
 	// step 2:  set the entry point
-
 	pc.latchFrom( inst_mem.READ() );
 	Clock::tick();
 
 	// step 3:  continue fetching, decoding, and executing instructions
 	// until we stop the simulation
-
-	while( !done && !halt_inst) {
+	int i = 0;
+	while( !done && !halt_inst && i++ < 7) {
 
 		// TODO: Check for PC overflow
 		if(false){
@@ -28,7 +26,6 @@ void run_simulation( char *instobj, char *dataobj ) {
 			done = true;
 			break;
 		}
-		
 
 		// Move instructions through the pipeline
 		execute();
