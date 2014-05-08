@@ -1,56 +1,43 @@
-// globals.C
-//
-// Global variables for the smartest little computer.
+/**
+ * globals.C
+ * 
+ * Global variables for the smartest little computer.
+ */ 
 
 #include "includes.h"
 
-//
-// Constants
-//
 
+/**
+ * Constants
+ */
 const unsigned int ADDR_BITS( 8 ); // 18-bit address => 256 units of memory
 const unsigned int DATA_BITS( 12 ); // 12-bit unit size
 
-//
-// Buses
-//
-
-Bus abus( "ADDRBUS", ADDR_BITS ); // bus to carry memory addresses
-Bus dbus( "DATABUS", DATA_BITS ); // bus to carry data and instructions
-
-//
-// Registers
-//
-
-StorageObject ir( "IR", DATA_BITS );        // instruction register
-Counter mdr( "MDR", DATA_BITS );      	    // memory data register
-Clearable ac( "AC", DATA_BITS );            // accumulator
-
-// 
-// Other components
-//
-
-Memory m( "Memory", ADDR_BITS, DATA_BITS ); // primary memory
-BusALU alu( "Adder", DATA_BITS );           // arithmetic logic unit
-
-//
-// Runtime control variables
-//
-
+/**
+ * Runtime control variables
+ */
 bool done ( false );		// is the simulation over?
 bool halt_inst ( false );    // did we halt because of the halt instruction?
 
+/**
+ * These will get passed onto the next pipeline stage at the following cycle.
+ */
 long d_prev_opc( 0 );
 long x_prev_opc( 0 );
 long m_prev_opc( 0 );
 
+/**
+ * These tell the second clock tick in a pipeline stage what that stage was
+ * working on in the first clock tick.
+ */
 long d_curr_opc( 0 );
 long x_curr_opc( 0 );
 long m_curr_opc( 0 );
 long w_curr_opc( 0 );
 
-// Start Smartest
-
+/**
+ * Memory used by the Smartest Little Computer
+ */
 Memory inst_mem( "Inst_Memory", ADDR_BITS, DATA_BITS );
 Memory data_mem( "Data_Memory", ADDR_BITS, DATA_BITS );
 

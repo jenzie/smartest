@@ -4,17 +4,16 @@
 int main ( int argc, char *argv[] ) {
 
 	// turn on data flow tracing and memory dump after load
-
 	// CPUObject::debug |= CPUObject::trace | CPUObject::memload;
 
 	// make sure we've been given an object file name
-
 	if( argc != 3 ) {
 		cerr << "Usage:  " << argv[0] << " inst-obj data-obj\n\n";
 		exit( 1 );
 	}
 
-	cout << hex; // change base for future printing
+	// change base for future printing
+	cout << hex;
 
 	try {
 

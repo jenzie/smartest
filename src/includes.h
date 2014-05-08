@@ -1,6 +1,8 @@
-// includes.h
-//
-// Master include file for the smartest little computer.
+/**
+ * includes.h
+ *
+ * Master include file for the smartest little computer.
+ */
 
 #ifndef _INCLUDES_H
 #define _INCLUDES_H

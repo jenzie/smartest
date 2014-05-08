@@ -1,6 +1,8 @@
-// run_simulation.C
-//
-// Primary execution loop for the smartest little computer simulator.
+/**
+ * run_simulation.C
+ *
+ * Primary execution loop for the smartest little computer simulator.
+ */
 
 #include <cstdio>
 #include "includes.h"
@@ -28,7 +30,7 @@ void run_simulation( char *instobj, char *dataobj ) {
 		}
 
 		// Move instructions through the pipeline
-		execute();
+		assemble();
 	}
 	
 	if( halt_inst ) {

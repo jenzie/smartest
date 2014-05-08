@@ -1,15 +1,16 @@
-// execute.C
-//
-// Instruction execution routine for the dummest little computer.
+/**
+ * execute.C
+ *
+ * Instruction execution routine for the dummest little computer.
+ */
 
 #include <cstdio>
 #include "includes.h"
 
-//
-// execute() - Moves instructions down through the pipeline
-//
-
-void execute() {
+/**
+ * Moves instructions down through the pipeline.
+ */
+void assemble() {
 	long opc;
 
 	// The opc returned is from the previous cycle of execution.

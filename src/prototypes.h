@@ -1,11 +1,13 @@
-// prototypes.h
-//
-// Function prototypes for the dummest little computer.
+/**
+ * prototypes.h
+ *
+ * Function prototypes for the dummest little computer.
+ */
 
 #ifndef _PROTOTYPES_H
 #define _PROTOTYPES_H
 
-void execute();
+void assemble();
 void make_connections();
 void run_simulation( char *, char * );
 void build_object_arrays();

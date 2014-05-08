@@ -1,8 +1,10 @@
-// make_connections.C
-//
-// Component connection function.  At execution time, this will
-// connect all the CPU components according to the design of
-// the architecture.
+/**
+ * make_connections.C
+ *
+ * Component connection function.  At execution time, this will
+ * connect all the CPU components according to the design of
+ * the architecture.
+ */
 
 #include "includes.h"
 

@@ -1,6 +1,8 @@
-// globals.h
-//
-// Extern declarations of global variables for the dummest little computer.
+/**
+ * globals.h
+ *
+ * Extern declarations of global variables for the dummest little computer.
+ */
 
 #ifndef _GLOBALS_H
 #define _GLOBALS_H
