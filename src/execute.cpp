@@ -58,17 +58,17 @@ long decode(){
 	
 	switch( opc ) {
 		case 0: // NOP
-			printf("D\tNOP\n");
+			printf("D1\tNOP\n");
 			break;
 		case 1: // Add
-			printf("D\tR%d = R%d + R%d\n", reg_rd, reg_rs, reg_rt);
+			printf("D1\tR%d = R%d + R%d\n", reg_rd, reg_rs, reg_rt);
 			dx_bus[0]->IN().pullFrom(*reg_file[reg_rs]);
 			dx_bus[1]->IN().pullFrom(*reg_file[reg_rt]);
 			dx_a.latchFrom(dx_bus[0]->OUT());
 			dx_b.latchFrom(dx_bus[1]->OUT());
 			break;
 		case 10:
-			printf("D\tR%d = MEM[R%d + %lx]\n", reg_rs, reg_rt, small_imm);
+			printf("D1\tR%d = MEM[R%d + %lx]\n", reg_rs, reg_rt, small_imm);
 			dx_bus[0]->IN().pullFrom(*reg_file[reg_rt]);
 			small_bus.IN().pullFrom(fd_ir);
 			dx_b.latchFrom(dx_bus[0]->OUT());
@@ -123,7 +123,7 @@ long memory( long opc ){
 			mw_alu_out.latchFrom(mw_bus[0]->OUT());
 			break;
 		case 10:
-			printf("M\tRead MEM[%02lx]\n", xm_alu_out.value());
+			printf("M1\tRead MEM[%02lx]\n", xm_alu_out.value());
 			mw_bus[0]->IN().pullFrom(xm_alu_out);
 			data_mem.MAR().latchFrom(mw_bus[0]->OUT());
 			break;
@@ -182,10 +182,10 @@ void execute_second(){
 	//cout << "X2\t";
 	switch(x_curr_opc){
 		case 1:
-			printf("X\tALU_OUT = %02lx\n", xm_alu_out.value() );
+			printf("X2\tALU_OUT = %02lx\n", xm_alu_out.value() );
 			break;
 		case 10:
-			printf("X\tEA = %02lx\n", xm_alu_out.value() );
+			printf("X2\tEA = %02lx\n", xm_alu_out.value() );
 			break;
 	}
 	
@@ -220,12 +220,12 @@ void writeback_second(){
 		case 0: // NOP
 			break;
 		case 1: // Add
-			printf("W\tR%lx = %02lx\n", mw_ir(DATA_BITS - 9, DATA_BITS - 10), mw_alu_out.value());
+			printf("W2\tR%lx = %02lx\n", mw_ir(DATA_BITS - 9, DATA_BITS - 10), mw_alu_out.value());
 			wd_bus.IN().pullFrom(mw_alu_out);
 			reg_file[mw_ir(DATA_BITS - 9, DATA_BITS - 10)]->latchFrom(wd_bus.OUT());
 			break;
 		case 10:
-			printf("W\tR%lx = %02lx\n", mw_ir(DATA_BITS - 5, DATA_BITS - 6), mw_mdr.value());
+			printf("W2\tR%lx = %02lx\n", mw_ir(DATA_BITS - 5, DATA_BITS - 6), mw_mdr.value());
 			wd_bus.IN().pullFrom(mw_mdr);
 			reg_file[mw_ir(DATA_BITS - 5, DATA_BITS - 6)]->latchFrom(wd_bus.OUT());
 			break;
