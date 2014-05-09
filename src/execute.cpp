@@ -15,29 +15,40 @@ void assemble() {
 
 	// The opc returned is from the previous cycle of execution.
 	// Execute the first tick for each stage.
-	printf("Start Next Instruction\n");
 	fetch();
 	printf("%-16s", inst_str);
+	sprintf(inst_total_output, "%-16s", inst_output);
 	opc = decode();
 	printf("%-16s", inst_str);
+	sprintf(inst_total_output, "%s%-16s", inst_total_output, inst_output);
 	opc = execute( opc );
 	printf("%-16s", inst_str);
+	sprintf(inst_total_output, "%s%-16s", inst_total_output, inst_output);
 	opc = memory( opc );
 	printf("%-16s", inst_str);
+	sprintf(inst_total_output, "%s%-16s", inst_total_output, inst_output);
 	writeback( opc );
 	printf("%s\n", inst_str);
+	printf("%s%s\n", inst_total_output, inst_output);
 	Clock::tick();
 	
 	// Execute the second tick for each stage.
 	fetch_second();
+	sprintf(inst_total_output, "%-16s", inst_output);
 	decode_second();
+	sprintf(inst_total_output, "%s%-16s", inst_total_output, inst_output);
 	execute_second();
+	sprintf(inst_total_output, "%s%-16s", inst_total_output, inst_output);
 	memory_second();
+	sprintf(inst_total_output, "%s%-16s", inst_total_output, inst_output);
 	writeback_second();
+	printf("%s%s\n", inst_total_output, inst_output);
 	Clock::tick();
 	
-	printf("Registers %02lx %02lx %02lx %02lx\n",reg_file[0]->value(),
-		reg_file[1]->value(), reg_file[2]->value(), reg_file[3]->value());
+	if( reg_changed ){
+		printf("Registers %02lx %02lx %02lx %02lx\n",reg_file[0]->value(),
+			reg_file[1]->value(), reg_file[2]->value(), reg_file[3]->value());
+	}
 	
 	cout << endl;
 }
@@ -46,6 +57,14 @@ void fetch(){
 	sprintf(inst_str, "Read PC(%02lx)", pc.value());
 	pc_bus.IN().pullFrom( pc );
 	inst_mem.MAR().latchFrom( pc_bus.OUT() );
+	
+	// TODO: check BPT for hits
+	if(false){
+	
+	}
+	else{
+		sprintf(inst_output, "No BPT Hit");
+	}
 }
 
 long decode(){
@@ -63,18 +82,26 @@ long decode(){
 	
 	switch( opc ) {
 		case 0: // NOP
+			sprintf(inst_output, "-");
 			break;
 		case 1: // Add
 			dx_bus[0]->IN().pullFrom(*reg_file[reg_rs]);
 			dx_bus[1]->IN().pullFrom(*reg_file[reg_rt]);
 			dx_a.latchFrom(dx_bus[0]->OUT());
 			dx_b.latchFrom(dx_bus[1]->OUT());
+			sprintf(inst_output, "a<-R%02lx b<-R%02lx",
+				reg_file[reg_rs]->value(), reg_file[reg_rt]->value());
 			break;
 		case 10:
 			dx_bus[0]->IN().pullFrom(*reg_file[reg_rt]);
 			small_bus.IN().pullFrom(fd_ir);
 			dx_b.latchFrom(dx_bus[0]->OUT());
 			dx_imm.latchFrom(small_bus.OUT());
+			sprintf(inst_output, "b<-R%02lx imm<-%02lx",
+				reg_file[reg_rt]->value(), small_imm);
+			break;
+		case 15:
+			sprintf(inst_output, "-");
 			break;
 	}
 
@@ -92,18 +119,23 @@ long execute( long opc ){
 	
 	switch( opc ) {
 		case 0: // NOP
+			sprintf(inst_output, "-");
 			break;
 		case 1: // Add
 			exec_alu.OP1().pullFrom(dx_a);
 			exec_alu.OP2().pullFrom(dx_b);
 			exec_alu.perform(BusALU::op_add);
 			xm_alu_out.latchFrom(exec_alu.OUT());
+			sprintf(inst_output, "A:%02lx; B:%02lx", dx_a.value(),
+				dx_b.value());
 			break;
 		case 10:
 			exec_alu.OP1().pullFrom(dx_b);
 			exec_alu.OP2().pullFrom(dx_imm);
 			exec_alu.perform(BusALU::op_add);
 			xm_alu_out.latchFrom(exec_alu.OUT());
+			sprintf(inst_output, "B:%02lx; IMM:%02lx", dx_b.value(),
+				dx_imm.value());
 			break;
 	}
 	
@@ -121,13 +153,15 @@ long memory( long opc ){
 	
 	switch( opc ) {
 		case 0: // NOP
+			sprintf(inst_output, "-");
 			break;
 		case 1: // Add
 			mw_bus[0]->IN().pullFrom(xm_alu_out);
 			mw_alu_out.latchFrom(mw_bus[0]->OUT());
+			sprintf(inst_output, "passthru");
 			break;
 		case 10:
-			//printf("M1\tRead MEM[%02lx]\n", xm_alu_out.value());
+			sprintf(inst_output, "MEM[ALU_OUT]");
 			mw_bus[0]->IN().pullFrom(xm_alu_out);
 			data_mem.MAR().latchFrom(mw_bus[0]->OUT());
 			break;
@@ -147,11 +181,13 @@ void writeback( long opc ){
 	
 	switch( opc ) {
 		case 0: // NOP
+			sprintf(inst_output, "-");
 			break;
 		case 1: // Add
+			sprintf(inst_output, "-");
 			break;
 		case 10:
-		
+			sprintf(inst_output, "-");
 			break;
 	}
 }
@@ -162,6 +198,14 @@ void fetch_second(){
 	inst_mem.read();
 	fd_ir.latchFrom( inst_mem.READ() );
 	pc.incr();
+	
+	// TODO modify BPT?
+	if(false){
+	
+	}
+	else{
+		sprintf(inst_output, "No BPT Update");
+	}
 }
 
 void decode_second(){
@@ -170,12 +214,16 @@ void decode_second(){
 
 	switch( d_curr_opc ) {
 		case 0: // NOP
+			sprintf(inst_output, "-");
 			break;
 		case 1: // Add
-			//cout << "\tAdd";
+			sprintf(inst_output, "-");
 			break;
 		case 10:
-		
+			sprintf(inst_output, "-");
+			break;
+		case 15:
+			sprintf(inst_output, "-");
 			break;
 	}
 	dx_bus[2]->IN().pullFrom(fd_ir);
@@ -186,11 +234,14 @@ void execute_second(){
 
 	//cout << "X2\t";
 	switch(x_curr_opc){
+		case 0:
+			sprintf(inst_output, "-");
+			break;
 		case 1:
-			//printf("X2\tALU_OUT = %02lx\n", xm_alu_out.value() );
+			sprintf(inst_output, "ALU_OUT<-%02lx", xm_alu_out.value());
 			break;
 		case 10:
-			//printf("X2\tEA = %02lx\n", xm_alu_out.value() );
+			sprintf(inst_output, "ALU_OUT<-%02lx", xm_alu_out.value() );
 			break;
 	}
 	
@@ -205,10 +256,15 @@ void memory_second(){
 	
 	switch( m_curr_opc ) {
 		case 0: // NOP
+			sprintf(inst_output, "-");
+			break;
+		case 1: // Add
+			sprintf(inst_output, "-");
 			break;
 		case 10:
 			mw_mdr.latchFrom(data_mem.READ());
 			data_mem.read();
+			sprintf(inst_output, "MDR<-MEM[%02lx]", xm_alu_out.value());
 			break;
 	}
 	
@@ -220,22 +276,30 @@ void memory_second(){
 void writeback_second(){
 
 	//cout << "W2\t";
+	reg_changed = false;
 	
 	switch( w_curr_opc ) {
 		case 0: // NOP
+			sprintf(inst_output, "-");
 			break;
 		case 1: // Add
-			//printf("W2\tR%lx = %02lx\n", mw_ir(DATA_BITS - 9, DATA_BITS - 10), mw_alu_out.value());
+			sprintf(inst_output, "R%lx<-%02lx",
+				mw_ir(DATA_BITS - 9, DATA_BITS - 10), mw_alu_out.value());
 			wd_bus.IN().pullFrom(mw_alu_out);
 			reg_file[mw_ir(DATA_BITS - 9, DATA_BITS - 10)]->latchFrom(wd_bus.OUT());
+			reg_changed = true;
 			break;
 		case 10:
-			//printf("W2\tR%lx = %02lx\n", mw_ir(DATA_BITS - 5, DATA_BITS - 6), mw_mdr.value());
+			sprintf(inst_output, "R%lx<-%02lx",
+				mw_ir(DATA_BITS - 5, DATA_BITS - 6), mw_mdr.value());
 			wd_bus.IN().pullFrom(mw_mdr);
 			reg_file[mw_ir(DATA_BITS - 5, DATA_BITS - 6)]->latchFrom(wd_bus.OUT());
+			reg_changed = true;
 			break;
 		case 15:
+			sprintf(inst_output, "Smartest Off");
 			halt_inst = true;
 			done = true;
+			break;
 	}
 }

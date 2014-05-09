@@ -19,5 +19,6 @@ void make_inst_str(StorageObject &ir){
 		case 0:  sprintf(inst_str, "NOP"); break;
 		case 1:  sprintf(inst_str, "R%d = R%d + R%d", reg_rd, reg_rs, reg_rt); break;
 		case 10: sprintf(inst_str, "R%d = MEM[R%d+%lx]", reg_rs, reg_rt, small_imm); break;
+		case 15: sprintf(inst_str, "HALT"); break;
 	}
 }

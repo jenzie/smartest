@@ -24,6 +24,9 @@ bool halt_inst ( false );    // did we halt because of the halt instruction?
  * Printing variables.
  */
 char inst_str[16];
+char inst_output[16];
+char inst_total_output[80];
+bool reg_changed( false );
 
 /**
  * These will get passed onto the next pipeline stage at the following cycle.

@@ -17,7 +17,9 @@ extern bool halt_inst;    // did we halt because of the halt instruction?
 
 // Printing Data
 extern char inst_str[16];
-extern char inst_output;
+extern char inst_output[16];
+extern char inst_total_output[80];
+extern bool reg_changed;
 
 // Previous OPC's for passing between stages of the pipeline
 extern long d_prev_opc;
