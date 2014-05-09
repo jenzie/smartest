@@ -21,6 +21,11 @@ bool done ( false );		// is the simulation over?
 bool halt_inst ( false );    // did we halt because of the halt instruction?
 
 /**
+ * Printing variables.
+ */
+char inst_str[16];
+
+/**
  * These will get passed onto the next pipeline stage at the following cycle.
  */
 long d_prev_opc( 0 );

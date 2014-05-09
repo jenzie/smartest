@@ -17,10 +17,15 @@ void assemble() {
 	// Execute the first tick for each stage.
 	printf("Start Next Instruction\n");
 	fetch();
+	printf("%-16s", inst_str);
 	opc = decode();
+	printf("%-16s", inst_str);
 	opc = execute( opc );
+	printf("%-16s", inst_str);
 	opc = memory( opc );
+	printf("%-16s", inst_str);
 	writeback( opc );
+	printf("%s\n", inst_str);
 	Clock::tick();
 	
 	// Execute the second tick for each stage.
@@ -38,14 +43,14 @@ void assemble() {
 }
 
 void fetch(){
-	
-	//cout << "F\t" << endl;
+	sprintf(inst_str, "Read PC(%02lx)", pc.value());
 	pc_bus.IN().pullFrom( pc );
 	inst_mem.MAR().latchFrom( pc_bus.OUT() );
 }
 
 long decode(){
 
+	make_inst_str(fd_ir);
 	long opc = fd_ir(DATA_BITS - 1, DATA_BITS - 4);
 	d_curr_opc = opc; // for second clock tick
 	
@@ -58,17 +63,14 @@ long decode(){
 	
 	switch( opc ) {
 		case 0: // NOP
-			printf("D1\tNOP\n");
 			break;
 		case 1: // Add
-			printf("D1\tR%d = R%d + R%d\n", reg_rd, reg_rs, reg_rt);
 			dx_bus[0]->IN().pullFrom(*reg_file[reg_rs]);
 			dx_bus[1]->IN().pullFrom(*reg_file[reg_rt]);
 			dx_a.latchFrom(dx_bus[0]->OUT());
 			dx_b.latchFrom(dx_bus[1]->OUT());
 			break;
 		case 10:
-			printf("D1\tR%d = MEM[R%d + %lx]\n", reg_rs, reg_rt, small_imm);
 			dx_bus[0]->IN().pullFrom(*reg_file[reg_rt]);
 			small_bus.IN().pullFrom(fd_ir);
 			dx_b.latchFrom(dx_bus[0]->OUT());
@@ -86,6 +88,7 @@ long execute( long opc ){
 
 	//cout << "X\t" << opc << endl;
 	x_curr_opc = opc; // for second clock tick
+	make_inst_str(dx_ir);
 	
 	switch( opc ) {
 		case 0: // NOP
@@ -114,6 +117,7 @@ long memory( long opc ){
 
 	//cout << "M\t" << opc << endl;
 	m_curr_opc = opc; // for second clock tick
+	make_inst_str(xm_ir);
 	
 	switch( opc ) {
 		case 0: // NOP
@@ -123,7 +127,7 @@ long memory( long opc ){
 			mw_alu_out.latchFrom(mw_bus[0]->OUT());
 			break;
 		case 10:
-			printf("M1\tRead MEM[%02lx]\n", xm_alu_out.value());
+			//printf("M1\tRead MEM[%02lx]\n", xm_alu_out.value());
 			mw_bus[0]->IN().pullFrom(xm_alu_out);
 			data_mem.MAR().latchFrom(mw_bus[0]->OUT());
 			break;
@@ -139,6 +143,7 @@ void writeback( long opc ){
 
 	//cout << "W\t" << opc << endl;
 	w_curr_opc = opc; // for second clock tick
+	make_inst_str(mw_ir);
 	
 	switch( opc ) {
 		case 0: // NOP
@@ -182,10 +187,10 @@ void execute_second(){
 	//cout << "X2\t";
 	switch(x_curr_opc){
 		case 1:
-			printf("X2\tALU_OUT = %02lx\n", xm_alu_out.value() );
+			//printf("X2\tALU_OUT = %02lx\n", xm_alu_out.value() );
 			break;
 		case 10:
-			printf("X2\tEA = %02lx\n", xm_alu_out.value() );
+			//printf("X2\tEA = %02lx\n", xm_alu_out.value() );
 			break;
 	}
 	
@@ -220,12 +225,12 @@ void writeback_second(){
 		case 0: // NOP
 			break;
 		case 1: // Add
-			printf("W2\tR%lx = %02lx\n", mw_ir(DATA_BITS - 9, DATA_BITS - 10), mw_alu_out.value());
+			//printf("W2\tR%lx = %02lx\n", mw_ir(DATA_BITS - 9, DATA_BITS - 10), mw_alu_out.value());
 			wd_bus.IN().pullFrom(mw_alu_out);
 			reg_file[mw_ir(DATA_BITS - 9, DATA_BITS - 10)]->latchFrom(wd_bus.OUT());
 			break;
 		case 10:
-			printf("W2\tR%lx = %02lx\n", mw_ir(DATA_BITS - 5, DATA_BITS - 6), mw_mdr.value());
+			//printf("W2\tR%lx = %02lx\n", mw_ir(DATA_BITS - 5, DATA_BITS - 6), mw_mdr.value());
 			wd_bus.IN().pullFrom(mw_mdr);
 			reg_file[mw_ir(DATA_BITS - 5, DATA_BITS - 6)]->latchFrom(wd_bus.OUT());
 			break;

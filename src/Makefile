@@ -1,5 +1,5 @@
 #
-# Created by gmakemake (Ubuntu Sep  7 2011) on Tue May  6 20:42:21 2014
+# Created by gmakemake (Ubuntu Sep  7 2011) on Fri May  9 10:31:19 2014
 #
 
 #
@@ -54,14 +54,14 @@ CCLIBFLAGS = $(LIBFLAGS)
 ########## End of flags from header.mak
 
 
-CPP_FILES =	execute.cpp globals.cpp make_connections.cpp object_arrays.cpp run_simulation.cpp smartest.cpp
+CPP_FILES =	execute.cpp globals.cpp make_connections.cpp object_arrays.cpp run_simulation.cpp smartest.cpp utility.cpp
 C_FILES =	
 PS_FILES =	
 S_FILES =	
 H_FILES =	globals.h includes.h prototypes.h
 SOURCEFILES =	$(H_FILES) $(CPP_FILES) $(C_FILES) $(S_FILES)
 .PRECIOUS:	$(SOURCEFILES)
-OBJFILES =	execute.o globals.o make_connections.o object_arrays.o run_simulation.o 
+OBJFILES =	execute.o globals.o make_connections.o object_arrays.o run_simulation.o utility.o 
 
 #
 # Main targets
@@ -82,6 +82,7 @@ make_connections.o:	globals.h includes.h prototypes.h
 object_arrays.o:	globals.h includes.h prototypes.h
 run_simulation.o:	globals.h includes.h prototypes.h
 smartest.o:	globals.h includes.h prototypes.h
+utility.o:	globals.h includes.h prototypes.h
 
 #
 # Housekeeping

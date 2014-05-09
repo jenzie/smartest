@@ -11,6 +11,7 @@ void assemble();
 void make_connections();
 void run_simulation( char *, char * );
 void build_object_arrays();
+void make_inst_str( StorageObject & );
 
 // Stages
 void fetch();
