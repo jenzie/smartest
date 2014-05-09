@@ -49,7 +49,7 @@ Counter pc( "PC", ADDR_BITS );
 Bus pc_bus( "PC_Bus", ADDR_BITS );
 
 // Fetch -> Decode
-StorageObject fd_ir( "FD_IR_Bus", DATA_BITS );
+StorageObject fd_ir( "FD_IR", DATA_BITS );
 StorageObject fd_pc( "FD_PC", ADDR_BITS );
 StorageObject fd_npc( "FD_NPC", ADDR_BITS );
 Bus fetch_bus( "Fetch_Bus", ADDR_BITS );
@@ -91,7 +91,7 @@ StorageObject mw_alu_out( "MW_ALU_OUT", DATA_BITS );
 Bus** mw_bus;
 
 // Writeback
-long write_reg(-1);
+// N/A
 
 // Writeback -> Regfile
 Bus wd_bus( "WD_Bus", DATA_BITS );

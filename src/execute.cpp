@@ -62,7 +62,6 @@ long decode(){
 			break;
 		case 1: // Add
 			printf("D\tR%d = R%d + R%d\n", reg_rd, reg_rs, reg_rt);
-			write_reg = reg_rd;
 			dx_bus[0]->IN().pullFrom(*reg_file[reg_rs]);
 			dx_bus[1]->IN().pullFrom(*reg_file[reg_rt]);
 			dx_a.latchFrom(dx_bus[0]->OUT());
@@ -74,7 +73,6 @@ long decode(){
 			small_bus.IN().pullFrom(fd_ir);
 			dx_b.latchFrom(dx_bus[0]->OUT());
 			dx_imm.latchFrom(small_bus.OUT());
-			write_reg = reg_rs;
 			break;
 	}
 
@@ -105,7 +103,7 @@ long execute( long opc ){
 			xm_alu_out.latchFrom(exec_alu.OUT());
 			break;
 	}
-
+	
 	// swap out the previous opc and return it for the next stage.
 	long old_opc = x_prev_opc;
 	x_prev_opc = opc;
@@ -130,7 +128,7 @@ long memory( long opc ){
 			data_mem.MAR().latchFrom(mw_bus[0]->OUT());
 			break;
 	}
-
+	
 	// swap out the previous opc and return it for the next stage.
 	long old_opc = m_prev_opc;
 	m_prev_opc = opc;
@@ -175,6 +173,8 @@ void decode_second(){
 		
 			break;
 	}
+	dx_bus[2]->IN().pullFrom(fd_ir);
+	dx_ir.latchFrom(dx_bus[2]->OUT());
 }
 
 void execute_second(){
@@ -188,6 +188,10 @@ void execute_second(){
 			printf("X\tEA = %02lx\n", xm_alu_out.value() );
 			break;
 	}
+	
+	xm_bus[0]->IN().pullFrom(dx_ir);
+	xm_ir.latchFrom(xm_bus[0]->OUT());
+
 }
 
 void memory_second(){
@@ -202,6 +206,10 @@ void memory_second(){
 			data_mem.read();
 			break;
 	}
+	
+	mw_bus[1]->IN().pullFrom(xm_ir);
+	mw_ir.latchFrom(mw_bus[1]->OUT());
+
 }
 
 void writeback_second(){
@@ -212,14 +220,14 @@ void writeback_second(){
 		case 0: // NOP
 			break;
 		case 1: // Add
-			printf("W\tR%lx = %02lx\n", write_reg, mw_alu_out.value());
+			printf("W\tR%lx = %02lx\n", mw_ir(DATA_BITS - 9, DATA_BITS - 10), mw_alu_out.value());
 			wd_bus.IN().pullFrom(mw_alu_out);
-			reg_file[write_reg]->latchFrom(wd_bus.OUT());
+			reg_file[mw_ir(DATA_BITS - 9, DATA_BITS - 10)]->latchFrom(wd_bus.OUT());
 			break;
 		case 10:
-			printf("W\tR%lx = %02lx\n", write_reg, mw_mdr.value());
+			printf("W\tR%lx = %02lx\n", mw_ir(DATA_BITS - 5, DATA_BITS - 6), mw_mdr.value());
 			wd_bus.IN().pullFrom(mw_mdr);
-			reg_file[write_reg]->latchFrom(wd_bus.OUT());
+			reg_file[mw_ir(DATA_BITS - 5, DATA_BITS - 6)]->latchFrom(wd_bus.OUT());
 			break;
 		case 15:
 			halt_inst = true;

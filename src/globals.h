@@ -75,7 +75,7 @@ extern StorageObject mw_alu_out;
 extern Bus** mw_bus;
 
 // Writeback
-extern long write_reg;
+// N/A
 
 // Writeback -> Regfile
 extern Bus wd_bus;

@@ -33,6 +33,8 @@ void make_connections() {
 		dx_a.connectsTo( dx_bus[i]->OUT() );
 		dx_b.connectsTo( dx_bus[i]->OUT() );
 		dx_c.connectsTo( dx_bus[i]->OUT() );
+		fd_ir.connectsTo( dx_bus[i]->IN() );
+		dx_ir.connectsTo( dx_bus[i]->OUT() );
 	}
 	fd_ir.connectsTo( small_bus.IN() );
 	dx_imm.connectsTo( small_bus.OUT() );
@@ -50,6 +52,8 @@ void make_connections() {
 		dx_a.connectsTo( xm_bus[ i ]->IN() );
 		dx_b.connectsTo( xm_bus[ i ]->IN() );
 		dx_imm.connectsTo( xm_bus[ i ]->IN() );
+		dx_ir.connectsTo( xm_bus[ i ]->IN() );
+		xm_ir.connectsTo( xm_bus[ i ]->OUT() );
 	}
 	
 	// Memory
@@ -60,6 +64,8 @@ void make_connections() {
 		data_mem.MAR().connectsTo( mw_bus[ i ]->OUT() );
 		xm_alu_out.connectsTo( mw_bus[ i ]->IN() );
 		mw_alu_out.connectsTo( mw_bus[ i ]->OUT() );
+		xm_ir.connectsTo( mw_bus[ i ]->IN() );
+		mw_ir.connectsTo( mw_bus[ i ]->OUT() );
 	}
 	
 	// Writeback
