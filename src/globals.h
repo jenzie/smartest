@@ -21,6 +21,11 @@ extern char inst_output[16];
 extern char inst_total_output[80];
 extern bool reg_changed;
 
+// BPT statistics
+extern int predictions;
+extern int failures;
+extern int total_branch;
+
 // Previous OPC's for passing between stages of the pipeline
 extern long d_prev_opc;
 extern long x_prev_opc;

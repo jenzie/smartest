@@ -50,6 +50,16 @@ void assemble() {
 			reg_file[1]->value(), reg_file[2]->value(), reg_file[3]->value());
 	}
 	
+	// Print BPT table
+	if( halt_inst == true ){
+		printf("\nBPT Statistics\n==============\n");
+		int total_queries = predictions + failures;
+		printf("Predictions:\t%02d\nFailures:\t%02d\n", predictions, failures);
+		printf("Accuracy:\t%02d%%\nBranches:\t%02d",
+			total_queries == 0 ? 0 : predictions / total_queries,
+			total_branch);
+	}
+	
 	cout << endl;
 }
 

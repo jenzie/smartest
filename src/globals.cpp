@@ -29,6 +29,13 @@ char inst_total_output[80];
 bool reg_changed( false );
 
 /**
+ * BPT Statistics
+ */
+int predictions( 0 );
+int failures( 0 );
+int total_branch( 0 );
+
+/**
  * These will get passed onto the next pipeline stage at the following cycle.
  */
 long d_prev_opc( 0 );
