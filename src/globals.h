@@ -24,7 +24,8 @@ extern bool reg_changed;
 // BPT statistics
 extern int predictions;
 extern int failures;
-extern int total_branch;
+extern int total_unique_branch;
+extern int total_branch_swapped;
 
 // Previous OPC's for passing between stages of the pipeline
 extern long d_prev_opc;

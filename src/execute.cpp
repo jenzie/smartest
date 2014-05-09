@@ -55,9 +55,13 @@ void assemble() {
 		printf("\nBPT Statistics\n==============\n");
 		int total_queries = predictions + failures;
 		printf("Predictions:\t%02d\nFailures:\t%02d\n", predictions, failures);
-		printf("Accuracy:\t%02d%%\nBranches:\t%02d",
+		printf("Accuracy:\t%02d%%\nUnique Branches:%02d\n",
 			total_queries == 0 ? 0 : predictions / total_queries,
-			total_branch);
+			total_unique_branch);
+		printf("Branch Swapped: %02d\nSaturation:\t%02.2f\n",
+			total_branch_swapped,
+			total_branch_swapped == 0 ? 
+				0 : total_branch_swapped / (double)total_unique_branch);
 	}
 	
 	cout << endl;

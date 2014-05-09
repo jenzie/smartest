@@ -33,7 +33,8 @@ bool reg_changed( false );
  */
 int predictions( 0 );
 int failures( 0 );
-int total_branch( 0 );
+int total_unique_branch( 0 );
+int total_branch_swapped( 0 );
 
 /**
  * These will get passed onto the next pipeline stage at the following cycle.
