@@ -30,10 +30,21 @@ void make_connections() {
 		reg_file[ i ]->connectsTo( dx_bus[3]->IN() );
 		reg_file[ i ]->connectsTo( comp_alu.OP1() );
 		reg_file[ i ]->connectsTo( comp_alu.OP2() );
+		dx_a.connectsTo( dx_bus[i]->OUT() );
+		dx_b.connectsTo( dx_bus[i]->OUT() );
+		dx_c.connectsTo( dx_bus[i]->OUT() );
 	}
+	fd_ir.connectsTo( small_bus.IN() );
+	dx_imm.connectsTo( small_bus.OUT() );
 	
 	// Execute
 	xm_alu_out.connectsTo( exec_alu.OUT() );
+	dx_a.connectsTo( exec_alu.OP1() );
+	dx_a.connectsTo( exec_alu.OP2() );
+	dx_b.connectsTo( exec_alu.OP1() );
+	dx_b.connectsTo( exec_alu.OP2() );
+	dx_imm.connectsTo( exec_alu.OP1() );
+	dx_imm.connectsTo( exec_alu.OP2() );
 	for( int i = 0; i < 3; i++ ){
 		xm_b.connectsTo( xm_bus[ i ]->OUT() );
 		dx_a.connectsTo( xm_bus[ i ]->IN() );
@@ -46,7 +57,9 @@ void make_connections() {
 	xm_b.connectsTo( data_mem.WRITE() );
 	for( int i = 0; i < 3; i++ ){
 		xm_alu_out.connectsTo( mw_bus[ i ]->IN() );
-		data_mem.MAR().connectsTo( mw_bus[ i ]->OUT() );		
+		data_mem.MAR().connectsTo( mw_bus[ i ]->OUT() );
+		xm_alu_out.connectsTo( mw_bus[ i ]->IN() );
+		mw_alu_out.connectsTo( mw_bus[ i ]->OUT() );
 	}
 	
 	// Writeback

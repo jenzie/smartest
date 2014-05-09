@@ -49,7 +49,10 @@ extern StorageObject dx_ir;
 extern StorageObject dx_imm;
 extern StorageObject dx_a;
 extern StorageObject dx_b;
+extern StorageObject dx_c;
 extern Bus** dx_bus;
+extern Bus small_bus;
+extern Bus large_bus;
 
 // Execute
 extern BusALU exec_alu;
@@ -57,6 +60,7 @@ extern BusALU exec_alu;
 // Execute -> Memory
 extern StorageObject xm_ir;
 extern StorageObject xm_b;
+extern StorageObject xm_c;
 extern StorageObject xm_alu_out;
 extern Bus** xm_bus;
 
@@ -66,11 +70,12 @@ extern Memory data_mem;
 // Memory -> Writeback
 extern StorageObject mw_ir;
 extern StorageObject mw_mdr;
+extern StorageObject mw_c;
 extern StorageObject mw_alu_out;
 extern Bus** mw_bus;
 
 // Writeback
-// N/A
+extern long write_reg;
 
 // Writeback -> Regfile
 extern Bus wd_bus;
