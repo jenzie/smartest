@@ -11,6 +11,8 @@
 
 extern const unsigned int ADDR_BITS; // 8-bit address => 256 units of memory
 extern const unsigned int DATA_BITS; // 12-bit unit size
+extern const unsigned int SIMM_BITS;
+extern const unsigned int MAX_BPT;
 
 extern bool done;		// is the simulation over?
 extern bool halt_inst;    // did we halt because of the halt instruction?
@@ -21,10 +23,13 @@ extern char inst_output[16];
 extern char inst_total_output[80];
 extern bool reg_changed;
 
+// BPT Control
+extern int insert_index;
+extern int history[16][6];
+
 // BPT statistics
 extern int predictions;
 extern int failures;
-extern int total_unique_branch;
 extern int total_branch_swapped;
 
 // Previous OPC's for passing between stages of the pipeline
@@ -43,6 +48,7 @@ extern StorageObject** bpt_rbank;
 extern Counter pc;
 extern Bus pc_bus;
 extern Memory inst_mem;
+extern bool incr_override;
 
 // Fetch -> Decode
 extern StorageObject fd_ir;

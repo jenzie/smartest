@@ -13,6 +13,7 @@
 const unsigned int ADDR_BITS( 8 ); // 18-bit address => 256 units of memory
 const unsigned int DATA_BITS( 12 ); // 12-bit unit size
 const unsigned int SIMM_BITS( 4 ); // Small immediate width
+const unsigned int MAX_BPT( 16 ); // Max size of the BPT
 
 /**
  * Runtime control variables
@@ -29,11 +30,17 @@ char inst_total_output[80];
 bool reg_changed( false );
 
 /**
+ * BPT Control Variables
+ */
+int insert_index( 0 );
+long bpt_ibank[MAX_BPT];
+int history[16][6];
+
+/**
  * BPT Statistics
  */
 int predictions( 0 );
 int failures( 0 );
-int total_unique_branch( 0 );
 int total_branch_swapped( 0 );
 
 /**
@@ -59,10 +66,10 @@ Memory inst_mem( "Inst_Memory", ADDR_BITS, DATA_BITS );
 Memory data_mem( "Data_Memory", ADDR_BITS, DATA_BITS );
 
 // Fetch
-long bpt_ibank[16];
 StorageObject** bpt_rbank;
 Counter pc( "PC", ADDR_BITS );
 Bus pc_bus( "PC_Bus", ADDR_BITS );
+bool incr_override( false );
 
 // Fetch -> Decode
 StorageObject fd_ir( "FD_IR", DATA_BITS );

@@ -17,9 +17,11 @@ void make_connections() {
 	pc.connectsTo( inst_mem.READ() );
 	for( int i = 0; i < 16; i++ ){
 		bpt_rbank[ i ]->connectsTo( pc_bus.IN() );
+		bpt_rbank[ i ]->connectsTo( offset_alu.OUT() );
 	}
 	
 	fd_ir.connectsTo( inst_mem.READ() );
+	pc.connectsTo( offset_alu.OUT() );
 	
 	// Decode
 	fd_ir.connectsTo( offset_alu.OP1() );
@@ -30,6 +32,8 @@ void make_connections() {
 		reg_file[ i ]->connectsTo( dx_bus[3]->IN() );
 		reg_file[ i ]->connectsTo( comp_alu.OP1() );
 		reg_file[ i ]->connectsTo( comp_alu.OP2() );
+		reg_file[ i ]->connectsTo( offset_alu.OP1() );
+		reg_file[ i ]->connectsTo( offset_alu.OP2() );
 		dx_a.connectsTo( dx_bus[i]->OUT() );
 		dx_b.connectsTo( dx_bus[i]->OUT() );
 		dx_c.connectsTo( dx_bus[i]->OUT() );
@@ -37,7 +41,13 @@ void make_connections() {
 		dx_ir.connectsTo( dx_bus[i]->OUT() );
 	}
 	fd_ir.connectsTo( small_bus.IN() );
+	fd_ir.connectsTo( large_bus.IN() );
 	dx_imm.connectsTo( small_bus.OUT() );
+	dx_imm.connectsTo( large_bus.OUT() );
+	dx_imm.connectsTo( offset_alu.OP1() );
+	dx_imm.connectsTo( offset_alu.OP2() );
+	pc.connectsTo( decode_branch_bus.OUT() );
+	dx_imm.connectsTo( decode_branch_bus.IN() );
 	
 	// Execute
 	xm_alu_out.connectsTo( exec_alu.OUT() );

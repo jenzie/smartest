@@ -22,6 +22,9 @@ int main ( int argc, char *argv[] ) {
 	
 		// Connect all the Arch component together
 		make_connections();
+		
+		// Initialize the BPT table to make some things easier
+		init_table();
 
 		// Begin the simulation of the Arch CPU
 		run_simulation( argv[1], argv[2] );

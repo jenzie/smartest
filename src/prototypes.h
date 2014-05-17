@@ -12,6 +12,13 @@ void make_connections();
 void run_simulation( char *, char * );
 void build_object_arrays();
 void make_inst_str( StorageObject & );
+void print_prediction( int index );
+
+// BPT
+void init_table();
+int check_entry( long );
+void add_entry( long, bool );
+void update_entry( long, bool );
 
 // Stages
 void fetch();

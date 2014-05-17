@@ -55,13 +55,12 @@ void assemble() {
 		printf("\nBPT Statistics\n==============\n");
 		int total_queries = predictions + failures;
 		printf("Predictions:\t%02d\nFailures:\t%02d\n", predictions, failures);
-		printf("Accuracy:\t%02d%%\nUnique Branches:%02d\n",
-			total_queries == 0 ? 0 : predictions / total_queries,
-			total_unique_branch);
+		printf("Accuracy:\t%02d%%\n",
+			total_queries == 0 ? 0 : predictions / total_queries);
 		printf("Branch Swapped: %02d\nSaturation:\t%02.2f\n",
 			total_branch_swapped,
 			total_branch_swapped == 0 ? 
-				0 : total_branch_swapped / (double)total_unique_branch);
+				0 : total_branch_swapped / (double) MAX_BPT );
 	}
 	
 	cout << endl;
@@ -71,10 +70,11 @@ void fetch(){
 	sprintf(inst_str, "Read PC(%02lx)", pc.value());
 	pc_bus.IN().pullFrom( pc );
 	inst_mem.MAR().latchFrom( pc_bus.OUT() );
+	incr_override = false;
 	
-	// TODO: check BPT for hits
-	if(false){
-	
+	int index = check_entry( pc.value() );
+	if( index != -1 ){
+		print_prediction( index );	
 	}
 	else{
 		sprintf(inst_output, "No BPT Hit");
@@ -92,7 +92,7 @@ long decode(){
 	int reg_rt = fd_ir(DATA_BITS - 7, DATA_BITS - 8);
 	int reg_rd = fd_ir(DATA_BITS - 9, DATA_BITS - 10);
 	long small_imm = fd_ir(DATA_BITS - 9, DATA_BITS - 12);
-	long big_imm = fd_ir(DATA_BITS - 5, DATA_BITS - 12);
+	long large_imm = fd_ir(DATA_BITS - 5, DATA_BITS - 12);
 	
 	switch( opc ) {
 		case 0: // NOP
@@ -106,7 +106,7 @@ long decode(){
 			sprintf(inst_output, "a<-R%02lx b<-R%02lx",
 				reg_file[reg_rs]->value(), reg_file[reg_rt]->value());
 			break;
-		case 10:
+		case 10: // Load
 			dx_bus[0]->IN().pullFrom(*reg_file[reg_rt]);
 			small_bus.IN().pullFrom(fd_ir);
 			dx_b.latchFrom(dx_bus[0]->OUT());
@@ -114,9 +114,17 @@ long decode(){
 			sprintf(inst_output, "b<-R%02lx imm<-%02lx",
 				reg_file[reg_rt]->value(), small_imm);
 			break;
-		case 15:
+		case 14: // Jump
+			dx_imm.latchFrom( large_bus.OUT() );
+			large_bus.IN().pullFrom( fd_ir );
+			sprintf(inst_output, "imm<-%02lx", large_imm);
+			incr_override = true;
+			break;
+		case 15: // Halt
 			sprintf(inst_output, "-");
 			break;
+		default:
+			sprintf(inst_output, "-");
 	}
 
 	// swap out the previous opc and return it for the next stage.
@@ -151,6 +159,8 @@ long execute( long opc ){
 			sprintf(inst_output, "B:%02lx; IMM:%02lx", dx_b.value(),
 				dx_imm.value());
 			break;
+		default:
+			sprintf(inst_output, "-");
 	}
 	
 	// swap out the previous opc and return it for the next stage.
@@ -179,6 +189,8 @@ long memory( long opc ){
 			mw_bus[0]->IN().pullFrom(xm_alu_out);
 			data_mem.MAR().latchFrom(mw_bus[0]->OUT());
 			break;
+		default:
+			sprintf(inst_output, "-");
 	}
 	
 	// swap out the previous opc and return it for the next stage.
@@ -189,7 +201,6 @@ long memory( long opc ){
 
 void writeback( long opc ){
 
-	//cout << "W\t" << opc << endl;
 	w_curr_opc = opc; // for second clock tick
 	make_inst_str(mw_ir);
 	
@@ -203,15 +214,21 @@ void writeback( long opc ){
 		case 10:
 			sprintf(inst_output, "-");
 			break;
+		default:
+			sprintf(inst_output, "-");
 	}
 }
 
 void fetch_second(){
 
-	//cout << "F2\t";
+	// Actually fetch the next instruction.
 	inst_mem.read();
 	fd_ir.latchFrom( inst_mem.READ() );
-	pc.incr();
+
+	// The decode stage may override our next PC value.
+	if( !incr_override ){
+		pc.incr();
+	}
 	
 	// TODO modify BPT?
 	if(false){
@@ -223,9 +240,9 @@ void fetch_second(){
 }
 
 void decode_second(){
-	
-	//cout << "D2\t";
 
+	int reg_rt = fd_ir(DATA_BITS - 7, DATA_BITS - 8);
+	
 	switch( d_curr_opc ) {
 		case 0: // NOP
 			sprintf(inst_output, "-");
@@ -236,9 +253,16 @@ void decode_second(){
 		case 10:
 			sprintf(inst_output, "-");
 			break;
+		case 14:
+			pc.latchFrom( decode_branch_bus.OUT() );
+			decode_branch_bus.IN().pullFrom( dx_imm );
+			sprintf(inst_output, "pc<-%02lx", dx_imm.value());
+			break;
 		case 15:
 			sprintf(inst_output, "-");
 			break;
+		default:
+			sprintf(inst_output, "-");
 	}
 	dx_bus[2]->IN().pullFrom(fd_ir);
 	dx_ir.latchFrom(dx_bus[2]->OUT());
@@ -246,7 +270,6 @@ void decode_second(){
 
 void execute_second(){
 
-	//cout << "X2\t";
 	switch(x_curr_opc){
 		case 0:
 			sprintf(inst_output, "-");
@@ -257,6 +280,8 @@ void execute_second(){
 		case 10:
 			sprintf(inst_output, "ALU_OUT<-%02lx", xm_alu_out.value() );
 			break;
+		default:
+			sprintf(inst_output, "-");
 	}
 	
 	xm_bus[0]->IN().pullFrom(dx_ir);
@@ -266,8 +291,6 @@ void execute_second(){
 
 void memory_second(){
 
-	//cout << "M2\t";
-	
 	switch( m_curr_opc ) {
 		case 0: // NOP
 			sprintf(inst_output, "-");
@@ -280,6 +303,8 @@ void memory_second(){
 			data_mem.read();
 			sprintf(inst_output, "MDR<-MEM[%02lx]", xm_alu_out.value());
 			break;
+		default:
+			sprintf(inst_output, "-");
 	}
 	
 	mw_bus[1]->IN().pullFrom(xm_ir);
@@ -289,7 +314,6 @@ void memory_second(){
 
 void writeback_second(){
 
-	//cout << "W2\t";
 	reg_changed = false;
 	
 	switch( w_curr_opc ) {
@@ -315,5 +339,7 @@ void writeback_second(){
 			halt_inst = true;
 			done = true;
 			break;
+		default:
+			sprintf(inst_output, "-");
 	}
 }
