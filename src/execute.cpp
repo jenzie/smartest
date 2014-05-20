@@ -197,7 +197,7 @@ long execute( long opc ){
 			execute_R_TYPE(BusALU::op_rashift ); break;
 		case 10: // SB
 			execute_I_TYPE(); break;
-		case 10: // LB
+		case 11: // LB
 			execute_I_TYPE(); break;
 		default:
 			sprintf(inst_output, "-");
