@@ -96,24 +96,39 @@ long decode(){
 	
 	switch( opc ) {
 		case 0: // NOP
-			sprintf(inst_output, "-");
-			break;
-		case 1: // Add
+			sprintf(inst_output, "-"); break;
+		case 1: // ADD
+			decode_R_TYPE(); break;
+		case 2: // ADDI
+			decode_I_TYPE(); break;
+		case 3: // SUB
+			decode_R_TYPE(); break;
+		case 4: // AND
+			decode_R_TYPE(); break;
+		case 5: // OR
+			decode_R_TYPE(); break;
+		case 6: // XOR
+			decode_R_TYPE(); break;
+		case 7: // SLL
+			decode_R_TYPE(); break;
+		case 8: // SRL
+			decode_R_TYPE(); break;
+		case 9: // SRA
+			decode_R_TYPE(); break;
+		case 10: // SB
+			decode_I_TYPE(); break;
+		case 11: // LB
+			decode_I_TYPE(); break;
+		case 12: // BEZ
 			dx_bus[0]->IN().pullFrom(*reg_file[reg_rs]);
-			dx_bus[1]->IN().pullFrom(*reg_file[reg_rt]);
 			dx_a.latchFrom(dx_bus[0]->OUT());
-			dx_b.latchFrom(dx_bus[1]->OUT());
-			sprintf(inst_output, "a<-R%02lx b<-R%02lx",
-				reg_file[reg_rs]->value(), reg_file[reg_rt]->value());
-			break;
-		case 10: // Load
-			dx_bus[0]->IN().pullFrom(*reg_file[reg_rt]);
-			small_bus.IN().pullFrom(fd_ir);
-			dx_b.latchFrom(dx_bus[0]->OUT());
-			dx_imm.latchFrom(small_bus.OUT());
-			sprintf(inst_output, "b<-R%02lx imm<-%02lx",
-				reg_file[reg_rt]->value(), small_imm);
-			break;
+			sprintf(inst_output, "a<-R%02lx b<-0",
+				reg_file[reg_rs]->value());
+		case 13: // BNE
+			dx_bus[0]->IN().pullFrom(*reg_file[reg_rs]);
+			dx_a.latchFrom(dx_bus[0]->OUT());
+			sprintf(inst_output, "a<-R%02lx b<-0",
+				reg_file[reg_rs]->value());
 		case 14: // Jump
 			dx_imm.latchFrom( large_bus.OUT() );
 			large_bus.IN().pullFrom( fd_ir );
@@ -131,6 +146,24 @@ long decode(){
 	long old_opc = d_prev_opc;
 	d_prev_opc = opc;
 	return old_opc;
+}
+
+void decode_R_TYPE(){
+	dx_bus[0]->IN().pullFrom(*reg_file[reg_rs]);
+	dx_bus[1]->IN().pullFrom(*reg_file[reg_rt]);
+	dx_a.latchFrom(dx_bus[0]->OUT());
+	dx_b.latchFrom(dx_bus[1]->OUT());
+	sprintf(inst_output, "a<-R%02lx b<-R%02lx",
+		reg_file[reg_rs]->value(), reg_file[reg_rt]->value());
+}
+
+void decode_I_TYPE(){
+	dx_bus[0]->IN().pullFrom(*reg_file[reg_rt]);
+	small_bus.IN().pullFrom(fd_ir);
+	dx_a.latchFrom(dx_bus[0]->OUT());
+	dx_imm.latchFrom(small_bus.OUT());
+	sprintf(inst_output, "a<-R%02lx imm<-%02lx",
+		reg_file[reg_rt]->value(), small_imm);
 }
 
 long execute( long opc ){
@@ -151,8 +184,8 @@ long execute( long opc ){
 			sprintf(inst_output, "A:%02lx; B:%02lx", dx_a.value(),
 				dx_b.value());
 			break;
-		case 10:
-			exec_alu.OP1().pullFrom(dx_b);
+		case 10: // Load
+			exec_alu.OP1().pullFrom(dx_a);
 			exec_alu.OP2().pullFrom(dx_imm);
 			exec_alu.perform(BusALU::op_add);
 			xm_alu_out.latchFrom(exec_alu.OUT());
