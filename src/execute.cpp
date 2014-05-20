@@ -289,15 +289,6 @@ void writeback( long opc ){
 	make_inst_str(mw_ir);
 	
 	switch( opc ) {
-		case 0: // NOP
-			sprintf(inst_output, "-");
-			break;
-		case 1: // Add
-			sprintf(inst_output, "-");
-			break;
-		case 10:
-			sprintf(inst_output, "-");
-			break;
 		default:
 			sprintf(inst_output, "-");
 	}
