@@ -30,7 +30,11 @@ void update_entry( long, bool );
 // Stages
 void fetch();
 long decode();
+void decode_R_TYPE();
+void decode_I_TYPE();
 long execute( long );
+void execute_R_TYPE( BusALU::Operation );
+void execute_I_TYPE();
 long memory( long );
 void writeback( long );
 

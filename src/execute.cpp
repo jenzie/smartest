@@ -57,9 +57,10 @@ void assemble() {
 		printf("Predictions:\t%02d\nFailures:\t%02d\n", predictions, failures);
 		printf("Accuracy:\t%02d%%\n",
 			total_queries == 0 ? 0 : predictions / total_queries);
-		printf("Branch Swaps:\t%02d\nSaturation:\t%02.1f\n",
+		printf("Branch Swapped: %02d\nSaturation:\t%02.2f\n",
 			total_branch_swapped,
-			(total_branch_swapped + MAX_BPT) / (double) MAX_BPT );
+			total_branch_swapped == 0 ? 
+				0 : total_branch_swapped / (double) MAX_BPT );
 	}
 	
 	cout << endl;
@@ -69,23 +70,13 @@ void fetch(){
 	sprintf(inst_str, "Read PC(%02lx)", pc.value());
 	pc_bus.IN().pullFrom( pc );
 	inst_mem.MAR().latchFrom( pc_bus.OUT() );
-	
-	// Reset all the flags
 	incr_override = false;
-	bpt_update = false;
-	bpt_hit = false;
-	bpt_taken = false;
-	bpt_jump = false;
-	bpt_predicted = false;
 	
 	int index = check_entry( pc.value() );
 	if( index != -1 ){
-		bpt_hit = true;
-		predictions++;
 		print_prediction( index );	
 	}
 	else{
-		bpt_hit = false;
 		sprintf(inst_output, "No BPT Hit");
 	}
 }
@@ -143,9 +134,6 @@ long decode(){
 			large_bus.IN().pullFrom( fd_ir );
 			sprintf(inst_output, "imm<-%02lx", large_imm);
 			incr_override = true;
-			bpt_jump = true;
-			bpt_update = true;
-			bpt_taken = true;
 			break;
 		case 15: // Halt
 			sprintf(inst_output, "-");
@@ -161,21 +149,22 @@ long decode(){
 }
 
 void decode_R_TYPE(){
-	dx_bus[0]->IN().pullFrom(*reg_file[reg_rs]);
-	dx_bus[1]->IN().pullFrom(*reg_file[reg_rt]);
+	dx_bus[0]->IN().pullFrom(*reg_file[parse_rs(fd_ir)]);
+	dx_bus[1]->IN().pullFrom(*reg_file[parse_rt(fd_ir)]);
 	dx_a.latchFrom(dx_bus[0]->OUT());
 	dx_b.latchFrom(dx_bus[1]->OUT());
 	sprintf(inst_output, "a<-R%02lx b<-R%02lx",
-		reg_file[reg_rs]->value(), reg_file[reg_rt]->value());
+		reg_file[parse_rs(fd_ir)]->value(), 
+		reg_file[parse_rt(fd_ir)]->value());
 }
 
 void decode_I_TYPE(){
-	dx_bus[0]->IN().pullFrom(*reg_file[reg_rt]);
+	dx_bus[0]->IN().pullFrom(*reg_file[parse_rt(fd_ir)]);
 	small_bus.IN().pullFrom(fd_ir);
 	dx_a.latchFrom(dx_bus[0]->OUT());
 	dx_imm.latchFrom(small_bus.OUT());
 	sprintf(inst_output, "a<-R%02lx imm<-%02lx",
-		reg_file[reg_rt]->value(), small_imm);
+		reg_file[parse_rt(fd_ir)]->value(), parse_imm(fd_ir, true));
 }
 
 long execute( long opc ){
@@ -188,22 +177,12 @@ long execute( long opc ){
 		case 0: // NOP
 			sprintf(inst_output, "-");
 			break;
-		case 1: // Add
-			exec_alu.OP1().pullFrom(dx_a);
-			exec_alu.OP2().pullFrom(dx_b);
-			exec_alu.perform(BusALU::op_add);
-			xm_alu_out.latchFrom(exec_alu.OUT());
-			sprintf(inst_output, "A:%02lx; B:%02lx", dx_a.value(),
-				dx_b.value());
-			break;
-		case 10: // Load
-			exec_alu.OP1().pullFrom(dx_a);
-			exec_alu.OP2().pullFrom(dx_imm);
-			exec_alu.perform(BusALU::op_add);
-			xm_alu_out.latchFrom(exec_alu.OUT());
-			sprintf(inst_output, "B:%02lx; IMM:%02lx", dx_b.value(),
-				dx_imm.value());
-			break;
+		case 1: // ADD
+			execute_R_TYPE( BusALU::op_add ); break;
+		case 2: // ADDI
+			
+		case 10: // LB
+			execute_I_TYPE(); break;
 		default:
 			sprintf(inst_output, "-");
 	}
@@ -212,6 +191,22 @@ long execute( long opc ){
 	long old_opc = x_prev_opc;
 	x_prev_opc = opc;
 	return old_opc;
+}
+
+void execute_R_TYPE( BusALU::Operation op ){
+	exec_alu.OP1().pullFrom(dx_a);
+	exec_alu.OP2().pullFrom(dx_b);
+	exec_alu.perform(op);
+	xm_alu_out.latchFrom(exec_alu.OUT());
+	sprintf(inst_output, "A:%02lx; B:%02lx", dx_a.value(), dx_b.value());
+}
+
+void execute_I_TYPE(){
+	exec_alu.OP1().pullFrom(dx_a);
+	exec_alu.OP2().pullFrom(dx_imm);
+	exec_alu.perform(BusALU::op_add);
+	xm_alu_out.latchFrom(exec_alu.OUT());
+	sprintf(inst_output, "A:%02lx; IMM:%02lx", dx_a.value(), dx_imm.value());
 }
 
 long memory( long opc ){
@@ -275,21 +270,12 @@ void fetch_second(){
 		pc.incr();
 	}
 	
-	// If we didn't get a hit, but we do have a branch, this is a new entry
-	if( bpt_update && !bpt_hit ){
-		sprintf(inst_output, "BPT(%02d)<-%02lx", insert_index, 
-			parse_ea( fd_ir, bpt_jump ) );
-		add_entry( pc.value(), bpt_taken );
-	}
+	// TODO modify BPT?
+	if(false){
 	
-	// If we did get a hit, then we are updating an existing entry.
-	else if( bpt_update && bpt_hit ){
-		sprintf(inst_output, "%02lx A:%s, P:%s", pc.value(), 
-			bpt_taken ? "T" : "F", bpt_predicted ? "T" : "F");
-		update_entry( pc.value(), bpt_taken );
 	}
 	else{
-		sprintf(inst_output, "-");
+		sprintf(inst_output, "No BPT Update");
 	}
 }
 
@@ -311,8 +297,6 @@ void decode_second(){
 			pc.latchFrom( decode_branch_bus.OUT() );
 			decode_branch_bus.IN().pullFrom( dx_imm );
 			sprintf(inst_output, "pc<-%02lx", dx_imm.value());
-			offset_alu.OP1().pullFrom( dx_imm );
-			offset_alu.perform( BusALU::op_rop1 );
 			break;
 		case 15:
 			sprintf(inst_output, "-");
@@ -320,8 +304,8 @@ void decode_second(){
 		default:
 			sprintf(inst_output, "-");
 	}
-	dx_bus[2]->IN().pullFrom( fd_ir );
-	dx_ir.latchFrom( dx_bus[2]->OUT() );
+	dx_bus[2]->IN().pullFrom(fd_ir);
+	dx_ir.latchFrom(dx_bus[2]->OUT());
 }
 
 void execute_second(){
