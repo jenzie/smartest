@@ -21,6 +21,7 @@ void make_connections() {
 	}
 	
 	fd_ir.connectsTo( inst_mem.READ() );
+	fd_ir.connectsTo( pc_bus.IN() );
 	pc.connectsTo( offset_alu.OUT() );
 	
 	// Decode

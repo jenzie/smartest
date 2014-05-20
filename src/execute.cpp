@@ -57,10 +57,9 @@ void assemble() {
 		printf("Predictions:\t%02d\nFailures:\t%02d\n", predictions, failures);
 		printf("Accuracy:\t%02d%%\n",
 			total_queries == 0 ? 0 : predictions / total_queries);
-		printf("Branch Swapped: %02d\nSaturation:\t%02.2f\n",
+		printf("Branch Swaps:\t%02d\nSaturation:\t%02.1f\n",
 			total_branch_swapped,
-			total_branch_swapped == 0 ? 
-				0 : total_branch_swapped / (double) MAX_BPT );
+			(total_branch_swapped + MAX_BPT) / (double) MAX_BPT );
 	}
 	
 	cout << endl;
@@ -70,13 +69,23 @@ void fetch(){
 	sprintf(inst_str, "Read PC(%02lx)", pc.value());
 	pc_bus.IN().pullFrom( pc );
 	inst_mem.MAR().latchFrom( pc_bus.OUT() );
+	
+	// Reset all the flags
 	incr_override = false;
+	bpt_update = false;
+	bpt_hit = false;
+	bpt_taken = false;
+	bpt_jump = false;
+	bpt_predicted = false;
 	
 	int index = check_entry( pc.value() );
 	if( index != -1 ){
+		bpt_hit = true;
+		predictions++;
 		print_prediction( index );	
 	}
 	else{
+		bpt_hit = false;
 		sprintf(inst_output, "No BPT Hit");
 	}
 }
@@ -134,6 +143,9 @@ long decode(){
 			large_bus.IN().pullFrom( fd_ir );
 			sprintf(inst_output, "imm<-%02lx", large_imm);
 			incr_override = true;
+			bpt_jump = true;
+			bpt_update = true;
+			bpt_taken = true;
 			break;
 		case 15: // Halt
 			sprintf(inst_output, "-");
@@ -263,12 +275,21 @@ void fetch_second(){
 		pc.incr();
 	}
 	
-	// TODO modify BPT?
-	if(false){
+	// If we didn't get a hit, but we do have a branch, this is a new entry
+	if( bpt_update && !bpt_hit ){
+		sprintf(inst_output, "BPT(%02d)<-%02lx", insert_index, 
+			parse_ea( fd_ir, bpt_jump ) );
+		add_entry( pc.value(), bpt_taken );
+	}
 	
+	// If we did get a hit, then we are updating an existing entry.
+	else if( bpt_update && bpt_hit ){
+		sprintf(inst_output, "%02lx A:%s, P:%s", pc.value(), 
+			bpt_taken ? "T" : "F", bpt_predicted ? "T" : "F");
+		update_entry( pc.value(), bpt_taken );
 	}
 	else{
-		sprintf(inst_output, "No BPT Update");
+		sprintf(inst_output, "-");
 	}
 }
 
@@ -290,6 +311,8 @@ void decode_second(){
 			pc.latchFrom( decode_branch_bus.OUT() );
 			decode_branch_bus.IN().pullFrom( dx_imm );
 			sprintf(inst_output, "pc<-%02lx", dx_imm.value());
+			offset_alu.OP1().pullFrom( dx_imm );
+			offset_alu.perform( BusALU::op_rop1 );
 			break;
 		case 15:
 			sprintf(inst_output, "-");
@@ -297,8 +320,8 @@ void decode_second(){
 		default:
 			sprintf(inst_output, "-");
 	}
-	dx_bus[2]->IN().pullFrom(fd_ir);
-	dx_ir.latchFrom(dx_bus[2]->OUT());
+	dx_bus[2]->IN().pullFrom( fd_ir );
+	dx_ir.latchFrom( dx_bus[2]->OUT() );
 }
 
 void execute_second(){

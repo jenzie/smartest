@@ -35,6 +35,11 @@ bool reg_changed( false );
 int insert_index( 0 );
 long bpt_ibank[MAX_BPT];
 int history[16][6];
+bool bpt_update( false );
+bool bpt_hit( false );
+bool bpt_taken( false );
+bool bpt_jump( false );
+bool bpt_predicted( false );
 
 /**
  * BPT Statistics
