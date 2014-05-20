@@ -180,7 +180,23 @@ long execute( long opc ){
 		case 1: // ADD
 			execute_R_TYPE( BusALU::op_add ); break;
 		case 2: // ADDI
-			
+			execute_I_TYPE(); break;
+		case 3: // SUB
+			execute_R_TYPE( BusALU::op_sub ); break;
+		case 4: // AND
+			execute_R_TYPE(BusALU::op_and ); break;
+		case 5: // OR
+			execute_R_TYPE(BusALU::op_or ); break;
+		case 6: // XOR
+			execute_R_TYPE(BusALU::op_xor ); break;
+		case 7: // SLL
+			execute_R_TYPE(BusALU::op_lshift ); break;
+		case 8: // SRL
+			execute_R_TYPE(BusALU::op_rshift ); break;
+		case 9: // SRA
+			execute_R_TYPE(BusALU::op_rashift ); break;
+		case 10: // SB
+			execute_I_TYPE(); break;
 		case 10: // LB
 			execute_I_TYPE(); break;
 		default:
