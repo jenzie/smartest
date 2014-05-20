@@ -8,12 +8,12 @@
 void make_inst_str(StorageObject &ir){
 	
 	// Extract the packed bits
-	long opc = ir(DATA_BITS - 1, DATA_BITS - 4);
-	int reg_rs = ir(DATA_BITS - 5, DATA_BITS - 6);
-	int reg_rt = ir(DATA_BITS - 7, DATA_BITS - 8);
-	int reg_rd = ir(DATA_BITS - 9, DATA_BITS - 10);
-	long small_imm = ir(DATA_BITS - 9, DATA_BITS - 12);
-	long large_imm = ir(DATA_BITS - 5, DATA_BITS - 12);
+	long opc = parse_opc( ir );
+	int reg_rs = parse_rs( ir );
+	int reg_rt = parse_rt( ir );
+	int reg_rd = parse_rd( ir );
+	long small_imm = parse_imm( ir, true );
+	long large_imm = parse_imm( ir, false );
 
 	switch(opc){
 		case 0:  sprintf(inst_str, "NOP"); break;
@@ -22,4 +22,34 @@ void make_inst_str(StorageObject &ir){
 		case 14: sprintf(inst_str, "JUMP %02lx", large_imm); break;
 		case 15: sprintf(inst_str, "HALT"); break;
 	}
+}
+
+long parse_imm( StorageObject &ir, bool i_type ){
+	return i_type ? ir(DATA_BITS - 9, DATA_BITS - 12) :
+		ir(DATA_BITS - 5, DATA_BITS - 12);
+}
+
+long parse_ea( StorageObject &ir, bool jump ){
+	return jump ? parse_imm( ir, false ) :
+		get_reg_value( parse_rt( ir ) ) + parse_imm( ir, true );
+}
+
+long parse_rs( StorageObject &ir ){
+	return ir(DATA_BITS - 5, DATA_BITS - 6);
+}
+
+long parse_rt( StorageObject &ir ){
+	return ir(DATA_BITS - 7, DATA_BITS - 8);
+}
+
+long parse_rd( StorageObject &ir ){
+	return ir(DATA_BITS - 9, DATA_BITS - 10);
+}
+
+long get_reg_value( int reg ){
+	return reg_file[reg]->value();
+}
+
+long parse_opc( StorageObject &ir ){
+	return ir(DATA_BITS - 1, DATA_BITS - 4);
 }

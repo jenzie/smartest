@@ -13,6 +13,13 @@ void run_simulation( char *, char * );
 void build_object_arrays();
 void make_inst_str( StorageObject & );
 void print_prediction( int index );
+long parse_imm( StorageObject &, bool );
+long parse_ea( StorageObject &, bool );
+long parse_rs( StorageObject & );
+long parse_rt( StorageObject & );
+long parse_rd( StorageObject & );
+long get_reg_value( int );
+long parse_opc( StorageObject & );
 
 // BPT
 void init_table();

@@ -26,6 +26,11 @@ extern bool reg_changed;
 // BPT Control
 extern int insert_index;
 extern int history[16][6];
+extern bool bpt_update;
+extern bool bpt_hit;
+extern bool bpt_taken;
+extern bool bpt_jump;
+extern bool bpt_predicted;
 
 // BPT statistics
 extern int predictions;
