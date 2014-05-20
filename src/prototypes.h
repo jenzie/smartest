@@ -36,6 +36,8 @@ long execute( long );
 void execute_R_TYPE( BusALU::Operation );
 void execute_I_TYPE();
 long memory( long );
+void memory_R_TYPE();
+void memory_I_TYPE();
 void writeback( long );
 
 void fetch_second();

@@ -235,12 +235,30 @@ long memory( long opc ){
 		case 0: // NOP
 			sprintf(inst_output, "-");
 			break;
-		case 1: // Add
+		case 1: // ADD
+			memory_R_TYPE(); break;
+		case 2: // ADDI
+			memory_I_TYPE(); break;
+		case 3: // SUB
+			memory_R_TYPE(); break;
+		case 4: // AND
+			memory_R_TYPE(); break;
+		case 5: // OR
+			memory_R_TYPE(); break;
+		case 6: // XOR
+			memory_R_TYPE(); break;
+		case 7: // SLL
+			memory_R_TYPE(); break;
+		case 8: // SRL
+			memory_R_TYPE(); break;
+		case 9: // SRA
+			memory_R_TYPE(); break;
+		case 10: // SB
+			sprintf(inst_output, "MEM[ALU_OUT]");
 			mw_bus[0]->IN().pullFrom(xm_alu_out);
-			mw_alu_out.latchFrom(mw_bus[0]->OUT());
-			sprintf(inst_output, "passthru");
+			data_mem.MAR().latchFrom(mw_bus[0]->OUT());
 			break;
-		case 10:
+		case 11: // LB
 			sprintf(inst_output, "MEM[ALU_OUT]");
 			mw_bus[0]->IN().pullFrom(xm_alu_out);
 			data_mem.MAR().latchFrom(mw_bus[0]->OUT());
@@ -253,6 +271,16 @@ long memory( long opc ){
 	long old_opc = m_prev_opc;
 	m_prev_opc = opc;
 	return old_opc;
+}
+
+void memory_R_TYPE(){
+	mw_bus[0]->IN().pullFrom(xm_alu_out);
+	mw_alu_out.latchFrom(mw_bus[0]->OUT());
+	sprintf(inst_output, "passthru");
+}
+
+void memory_I_TYPE(){
+	memory_R_TYPE();
 }
 
 void writeback( long opc ){
