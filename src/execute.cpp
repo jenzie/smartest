@@ -293,6 +293,8 @@ void execute_I_TYPE(){
 	exec_alu.OP2().pullFrom(dx_imm);
 	exec_alu.perform(BusALU::op_add);
 	xm_alu_out.latchFrom(exec_alu.OUT());
+	xm_bus[0]->IN().pullFrom(dx_a);
+	xm_a.latchFrom(xm_bus[0]->OUT());
 	sprintf(inst_output, "A:%02lx; IMM:%02lx", dx_a.value(), dx_imm.value());
 }
 

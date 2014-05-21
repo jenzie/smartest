@@ -100,6 +100,7 @@ extern BusALU exec_alu;
 
 // Execute -> Memory
 extern StorageObject xm_ir;
+extern StorageObject xm_a;
 extern StorageObject xm_b;
 extern StorageObject xm_c;
 extern StorageObject xm_alu_out;

@@ -124,6 +124,7 @@ BusALU exec_alu( "EXEC_ALU", DATA_BITS );
 
 // Execute -> Memory
 StorageObject xm_ir( "XM_IR", DATA_BITS );
+StorageObject xm_a( "XM_A", DATA_BITS );
 StorageObject xm_b( "XM_B", DATA_BITS );
 StorageObject xm_c( "XM_C", DATA_BITS );
 StorageObject xm_alu_out( "XM_ALU_OUT", DATA_BITS );
