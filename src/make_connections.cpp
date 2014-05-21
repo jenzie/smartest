@@ -10,19 +10,30 @@
 
 void make_connections() {
 
+	// Constants
+	const_one.connectsTo( incr_alu.OP2() );
+
 	// Fetch
 	inst_mem.MAR().connectsTo( pc_bus.OUT() );
+	inst_mem.MAR().connectsTo( inst_bus.OUT() );
+	pc.connectsTo( inst_bus.IN() );
 	pc.connectsTo( pc_bus.IN() );
 	pc.connectsTo( pc_bus.OUT() );
 	pc.connectsTo( inst_mem.READ() );
+	pc.connectsTo( incr_alu.OP1() );
+	fd_npc.connectsTo( incr_alu.OUT() );
+	fd_npc.connectsTo( pc_bus.IN() );
 	for( int i = 0; i < 16; i++ ){
 		bpt_rbank[ i ]->connectsTo( pc_bus.IN() );
 		bpt_rbank[ i ]->connectsTo( offset_alu.OUT() );
 	}
-	
+	fd_nop.connectsTo( fetch_bus.IN() );
 	fd_ir.connectsTo( inst_mem.READ() );
 	fd_ir.connectsTo( pc_bus.IN() );
+	fd_ir.connectsTo( fetch_bus.OUT() );
 	pc.connectsTo( offset_alu.OUT() );
+	fd_pc.connectsTo( fetch_bus.OUT() );
+	pc.connectsTo( fetch_bus.IN() );
 	
 	// Decode
 	fd_ir.connectsTo( offset_alu.OP1() );
@@ -40,6 +51,9 @@ void make_connections() {
 		dx_c.connectsTo( dx_bus[i]->OUT() );
 		fd_ir.connectsTo( dx_bus[i]->IN() );
 		dx_ir.connectsTo( dx_bus[i]->OUT() );
+		fd_nop.connectsTo( dx_bus[i]->IN() );
+		dx_pc.connectsTo( dx_bus[i]->OUT() );
+		fd_pc.connectsTo( dx_bus[i]->IN() );
 	}
 	fd_ir.connectsTo( small_bus.IN() );
 	fd_ir.connectsTo( large_bus.IN() );

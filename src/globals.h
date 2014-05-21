@@ -17,10 +17,14 @@ extern const unsigned int MAX_BPT;
 extern bool done;		// is the simulation over?
 extern bool halt_inst;    // did we halt because of the halt instruction?
 
+// Constant Registers
+extern StorageObject const_one;
+
 // Printing Data
 extern char inst_str[16];
 extern char inst_output[16];
 extern char inst_total_output[80];
+extern char debug_msg[80];
 extern bool reg_changed;
 
 // BPT Control
@@ -31,6 +35,15 @@ extern bool bpt_hit;
 extern bool bpt_taken;
 extern bool bpt_jump;
 extern bool bpt_predicted;
+extern bool bpt_index;
+extern bool bubble;
+
+extern bool bpt_d_update;
+extern bool bpt_d_hit;
+extern bool bpt_d_taken;
+extern bool bpt_d_jump;
+extern bool bpt_d_predicted;
+extern bool bpt_d_index;
 
 // BPT statistics
 extern int predictions;
@@ -54,11 +67,15 @@ extern Counter pc;
 extern Bus pc_bus;
 extern Memory inst_mem;
 extern bool incr_override;
+extern BusALU incr_alu;
+extern Bus predict_bus;
+extern Bus inst_bus;
 
 // Fetch -> Decode
 extern StorageObject fd_ir;
 extern StorageObject fd_pc;
 extern StorageObject fd_npc;
+extern StorageObject fd_nop;
 extern Bus fetch_bus;
 
 // Decode
@@ -69,6 +86,7 @@ extern Bus decode_branch_bus;
 
 // Decode -> Execute
 extern StorageObject dx_ir;
+extern StorageObject dx_pc;
 extern StorageObject dx_imm;
 extern StorageObject dx_a;
 extern StorageObject dx_b;

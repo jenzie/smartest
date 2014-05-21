@@ -51,10 +51,10 @@ void make_inst_str(StorageObject &ir){
 		case 11: sprintf(inst_str, "R%d<-MEM[R%d+%02lx]", 
 					reg_rs, reg_rt, small_imm); break; // LB
 					
-		case 12:  sprintf(inst_str, "if R%d=0, PC<-EA",
+		case 12:  sprintf(inst_str, "if R%d=0,PC<-EA",
 					reg_rs); break; // BEZ
 					
-		case 13:  sprintf(inst_str, "if R%d!=0, PC<-EA",
+		case 13:  sprintf(inst_str, "if R%d!=0,PC<-EA",
 					reg_rs); break; // BNE
 					
 		case 14: sprintf(inst_str, "JUMP %02lx", large_imm); break; // JUMP
@@ -93,4 +93,9 @@ long get_reg_value( int reg ){
 
 long parse_opc( StorageObject &ir ){
 	return ir(DATA_BITS - 1, DATA_BITS - 4);
+}
+
+bool can_branch( StorageObject &ir ){
+	long opc = parse_opc( ir );
+	return opc == 12 || opc == 13 || opc == 14;
 }

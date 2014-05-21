@@ -16,6 +16,9 @@ void run_simulation( char *instobj, char *dataobj ) {
 	// step 2:  set the entry point
 	pc.latchFrom( inst_mem.READ() );
 	Clock::tick();
+	
+	printf("%-16s%-16s%-16s%-16s%s", "FETCH", "DECODE", "EXECUTE", "MEMORY",
+		"WRITEBACK\n");
 
 	// step 3:  continue fetching, decoding, and executing instructions
 	// until we stop the simulation

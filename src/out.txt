@@ -1,0 +1,1087 @@
+CPU "ARCH" Simulator, 2.5a(Mar 10 2012)
+-----------------------------------------
+
+Inst_Memory sets starting address to 0
+Data_Memory sets starting address to 0
+FETCH           DECODE          EXECUTE         MEMORY          WRITEBACK
+Read PC(00)     NOP             NOP             NOP             NOP
+No BPT Hit      -               -               -               -
+PC:00
+-               -               -               -               -
+PC:01
+ P:0 T:0
+
+Read PC(01)     MEM[R0+00]<-R0  NOP             NOP             NOP
+No BPT Hit      a<-00 imm<-00   -               -               -
+PC:01
+-               -               -               -               -
+PC:02
+ P:0 T:0
+
+Read PC(02)     NOP             MEM[R0+00]<-R0  NOP             NOP
+No BPT Hit      -               A:00; IMM:00    -               -
+PC:02
+-               -               ALU_OUT<-00     -               -
+PC:03
+ P:0 T:0
+
+Read PC(03)     NOP             NOP             MEM[R0+00]<-R0  NOP
+No BPT Hit      -               -               MEM[ALU_OUT]    -
+PC:03
+-               -               -               MDR<-MEM[00]    -
+PC:04
+ P:0 T:0
+
+Read PC(04)     NOP             NOP             NOP             MEM[R0+00]<-R0
+No BPT Hit      -               -               -               -
+PC:04
+-               -               -               -               R0<-ff0
+PC:05
+ P:0 T:0
+Registers ff0 00 00 00
+
+Read PC(05)     if R0!=0,PC<-EA NOP             NOP             NOP
+No BPT Hit      ff0 != 0?       -               -               -
+PC:05
+PC? B00<-PC @04 pc<-08          -               -               -
+PC:08
+ P:0 T:1
+
+Read PC(08)     NOP             if R0!=0,PC<-EA NOP             NOP
+No BPT Hit      -               -               -               -
+PC:08
+-               -               -               -               -
+PC:09
+ P:0 T:0
+
+Read PC(09)     NOP             NOP             if R0!=0,PC<-EA NOP
+No BPT Hit      -               -               -               -
+PC:09
+-               -               -               -               -
+PC:0a
+ P:0 T:0
+
+Read PC(0a)     R0 = R0 + 01    NOP             NOP             if R0!=0,PC<-EA
+No BPT Hit      a<-ff0 imm<-01  -               -               -
+PC:0a
+-               -               -               -               -
+PC:0b
+ P:0 T:0
+
+Read PC(0b)     NOP             R0 = R0 + 01    NOP             NOP
+No BPT Hit      -               A:ff0; IMM:01   -               -
+PC:0b
+-               -               -               -               -
+PC:0c
+ P:0 T:0
+
+Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
+No BPT Hit      -               -               passthru        -
+PC:0c
+-               -               -               -               -
+PC:0d
+ P:0 T:0
+
+Read PC(0d)     JUMP 03         NOP             NOP             R0 = R0 + 01
+No BPT Hit      imm<-03         -               -               -
+PC:0d
+PC? B01<-PC @0c pc<-03          -               -               R0<-ff1
+PC:03
+ P:0 T:1
+Registers ff1 00 00 00
+
+Read PC(03)     NOP             JUMP 03         NOP             NOP
+No BPT Hit      -               -               -               -
+PC:03
+-               -               -               -               -
+PC:04
+ P:0 T:0
+
+Read PC(04)     NOP             NOP             JUMP 03         NOP
+Pred Not Taken  -               -               -               -
+PC:04
+-               -               -               -               -
+PC:05
+H:0 P:1 P:0 T:0
+0:04->08,0[1,1,1,1]  1:0c->03,0[1,1,1,1]  
+
+Read PC(05)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
+No BPT Hit      ff1 != 0?       -               -               -
+PC:05
+PC? A:T, P:F    pc<-08          -               -               -
+PC:08
+ P:0 T:1 Prev: 1 New: 2
+
+Read PC(08)     NOP             if R0!=0,PC<-EA NOP             NOP
+No BPT Hit      -               -               -               -
+PC:08
+-               -               -               -               -
+PC:09
+ P:0 T:0
+
+Read PC(09)     NOP             NOP             if R0!=0,PC<-EA NOP
+No BPT Hit      -               -               -               -
+PC:09
+-               -               -               -               -
+PC:0a
+ P:0 T:0
+
+Read PC(0a)     R0 = R0 + 01    NOP             NOP             if R0!=0,PC<-EA
+No BPT Hit      a<-ff1 imm<-01  -               -               -
+PC:0a
+-               -               -               -               -
+PC:0b
+ P:0 T:0
+
+Read PC(0b)     NOP             R0 = R0 + 01    NOP             NOP
+No BPT Hit      -               A:ff1; IMM:01   -               -
+PC:0b
+-               -               -               -               -
+PC:0c
+ P:0 T:0
+
+Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
+Pred Not Taken  -               -               passthru        -
+PC:0c
+-               -               -               -               -
+PC:0d
+H:0 P:1 P:0 T:0
+0:04->08,1[2,1,1,1]  1:0c->03,0[1,1,1,1]  
+
+Read PC(0d)     JUMP 03         NOP             NOP             R0 = R0 + 01
+No BPT Hit      imm<-03         -               -               -
+PC:0d
+PC? A:T, P:F    pc<-03          -               -               R0<-ff2
+PC:03
+ P:0 T:1 Prev: 1 New: 2
+Registers ff2 00 00 00
+
+Read PC(03)     NOP             JUMP 03         NOP             NOP
+No BPT Hit      -               -               -               -
+PC:03
+-               -               -               -               -
+PC:04
+ P:0 T:0
+
+Read PC(04)     NOP             NOP             JUMP 03         NOP
+Pred Not Taken  -               -               -               -
+PC:04
+-               -               -               -               -
+PC:05
+H:1 P:1 P:0 T:0
+0:04->08,1[2,1,1,1]  1:0c->03,1[2,1,1,1]  
+
+Read PC(05)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
+No BPT Hit      ff2 != 0?       -               -               -
+PC:05
+PC? A:T, P:F    pc<-08          -               -               -
+PC:08
+ P:0 T:1 Prev: 1 New: 2
+
+Read PC(08)     NOP             if R0!=0,PC<-EA NOP             NOP
+No BPT Hit      -               -               -               -
+PC:08
+-               -               -               -               -
+PC:09
+ P:0 T:0
+
+Read PC(09)     NOP             NOP             if R0!=0,PC<-EA NOP
+No BPT Hit      -               -               -               -
+PC:09
+-               -               -               -               -
+PC:0a
+ P:0 T:0
+
+Read PC(0a)     R0 = R0 + 01    NOP             NOP             if R0!=0,PC<-EA
+No BPT Hit      a<-ff2 imm<-01  -               -               -
+PC:0a
+-               -               -               -               -
+PC:0b
+ P:0 T:0
+
+Read PC(0b)     NOP             R0 = R0 + 01    NOP             NOP
+No BPT Hit      -               A:ff2; IMM:01   -               -
+PC:0b
+-               -               -               -               -
+PC:0c
+ P:0 T:0
+
+Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
+Pred Not Taken  -               -               passthru        -
+PC:0c
+-               -               -               -               -
+PC:0d
+H:1 P:1 P:0 T:0
+0:04->08,3[2,2,1,1]  1:0c->03,1[2,1,1,1]  
+
+Read PC(0d)     JUMP 03         NOP             NOP             R0 = R0 + 01
+No BPT Hit      imm<-03         -               -               -
+PC:0d
+PC? A:T, P:F    pc<-03          -               -               R0<-ff3
+PC:03
+ P:0 T:1 Prev: 1 New: 2
+Registers ff3 00 00 00
+
+Read PC(03)     NOP             JUMP 03         NOP             NOP
+No BPT Hit      -               -               -               -
+PC:03
+-               -               -               -               -
+PC:04
+ P:0 T:0
+
+Read PC(04)     NOP             NOP             JUMP 03         NOP
+Pred Not Taken  -               -               -               -
+PC:04
+-               -               -               -               -
+PC:05
+H:3 P:1 P:0 T:0
+0:04->08,3[2,2,1,1]  1:0c->03,3[2,2,1,1]  
+
+Read PC(05)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
+No BPT Hit      ff3 != 0?       -               -               -
+PC:05
+PC? A:T, P:F    pc<-08          -               -               -
+PC:08
+ P:0 T:1 Prev: 1 New: 2
+
+Read PC(08)     NOP             if R0!=0,PC<-EA NOP             NOP
+No BPT Hit      -               -               -               -
+PC:08
+-               -               -               -               -
+PC:09
+ P:0 T:0
+
+Read PC(09)     NOP             NOP             if R0!=0,PC<-EA NOP
+No BPT Hit      -               -               -               -
+PC:09
+-               -               -               -               -
+PC:0a
+ P:0 T:0
+
+Read PC(0a)     R0 = R0 + 01    NOP             NOP             if R0!=0,PC<-EA
+No BPT Hit      a<-ff3 imm<-01  -               -               -
+PC:0a
+-               -               -               -               -
+PC:0b
+ P:0 T:0
+
+Read PC(0b)     NOP             R0 = R0 + 01    NOP             NOP
+No BPT Hit      -               A:ff3; IMM:01   -               -
+PC:0b
+-               -               -               -               -
+PC:0c
+ P:0 T:0
+
+Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
+Pred Not Taken  -               -               passthru        -
+PC:0c
+-               -               -               -               -
+PC:0d
+H:3 P:1 P:0 T:0
+0:04->08,3[2,2,1,2]  1:0c->03,3[2,2,1,1]  
+
+Read PC(0d)     JUMP 03         NOP             NOP             R0 = R0 + 01
+No BPT Hit      imm<-03         -               -               -
+PC:0d
+PC? A:T, P:F    pc<-03          -               -               R0<-ff4
+PC:03
+ P:0 T:1 Prev: 1 New: 2
+Registers ff4 00 00 00
+
+Read PC(03)     NOP             JUMP 03         NOP             NOP
+No BPT Hit      -               -               -               -
+PC:03
+-               -               -               -               -
+PC:04
+ P:0 T:0
+
+Read PC(04)     NOP             NOP             JUMP 03         NOP
+Pred Taken      -               -               -               -
+PC:08
+-               -               -               -               -
+PC:08
+H:3 P:2 P:0 T:0
+0:04->08,3[2,2,1,2]  1:0c->03,3[2,2,1,2]  
+
+Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
+No BPT Hit      ff4 != 0?       -               -               -
+PC:08
+PC+ A:T, P:T    -               -               -               -
+PC:09
+ P:1 T:1 Prev: 2 New: 3
+
+Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
+No BPT Hit      -               -               -               -
+PC:09
+-               -               -               -               -
+PC:0a
+ P:0 T:0
+
+Read PC(0a)     R0 = R0 + 01    NOP             if R0!=0,PC<-EA NOP
+No BPT Hit      a<-ff4 imm<-01  -               -               -
+PC:0a
+-               -               -               -               -
+PC:0b
+ P:0 T:0
+
+Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
+No BPT Hit      -               A:ff4; IMM:01   -               -
+PC:0b
+-               -               -               -               -
+PC:0c
+ P:0 T:0
+
+Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
+Pred Taken      -               -               passthru        -
+PC:03
+-               -               -               -               -
+PC:03
+H:3 P:2 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,2]  
+
+Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
+No BPT Hit      imm<-03         -               -               -
+PC:03
+PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ff5
+PC:03
+ P:1 T:1 Prev: 2 New: 3
+Registers ff5 00 00 00
+
+Read PC(03)     NOP             JUMP 03         NOP             NOP
+No BPT Hit      -               -               -               -
+PC:03
+-               -               -               -               -
+PC:04
+ P:0 T:0
+
+Read PC(04)     NOP             NOP             JUMP 03         NOP
+Pred Taken      -               -               -               -
+PC:08
+-               -               -               -               -
+PC:08
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
+No BPT Hit      ff5 != 0?       -               -               -
+PC:08
+PC+ A:T, P:T    -               -               -               -
+PC:09
+ P:1 T:1 Prev: 3 New: 3
+
+Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
+No BPT Hit      -               -               -               -
+PC:09
+-               -               -               -               -
+PC:0a
+ P:0 T:0
+
+Read PC(0a)     R0 = R0 + 01    NOP             if R0!=0,PC<-EA NOP
+No BPT Hit      a<-ff5 imm<-01  -               -               -
+PC:0a
+-               -               -               -               -
+PC:0b
+ P:0 T:0
+
+Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
+No BPT Hit      -               A:ff5; IMM:01   -               -
+PC:0b
+-               -               -               -               -
+PC:0c
+ P:0 T:0
+
+Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
+Pred Taken      -               -               passthru        -
+PC:03
+-               -               -               -               -
+PC:03
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
+No BPT Hit      imm<-03         -               -               -
+PC:03
+PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ff6
+PC:03
+ P:1 T:1 Prev: 3 New: 3
+Registers ff6 00 00 00
+
+Read PC(03)     NOP             JUMP 03         NOP             NOP
+No BPT Hit      -               -               -               -
+PC:03
+-               -               -               -               -
+PC:04
+ P:0 T:0
+
+Read PC(04)     NOP             NOP             JUMP 03         NOP
+Pred Taken      -               -               -               -
+PC:08
+-               -               -               -               -
+PC:08
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
+No BPT Hit      ff6 != 0?       -               -               -
+PC:08
+PC+ A:T, P:T    -               -               -               -
+PC:09
+ P:1 T:1 Prev: 3 New: 3
+
+Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
+No BPT Hit      -               -               -               -
+PC:09
+-               -               -               -               -
+PC:0a
+ P:0 T:0
+
+Read PC(0a)     R0 = R0 + 01    NOP             if R0!=0,PC<-EA NOP
+No BPT Hit      a<-ff6 imm<-01  -               -               -
+PC:0a
+-               -               -               -               -
+PC:0b
+ P:0 T:0
+
+Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
+No BPT Hit      -               A:ff6; IMM:01   -               -
+PC:0b
+-               -               -               -               -
+PC:0c
+ P:0 T:0
+
+Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
+Pred Taken      -               -               passthru        -
+PC:03
+-               -               -               -               -
+PC:03
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
+No BPT Hit      imm<-03         -               -               -
+PC:03
+PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ff7
+PC:03
+ P:1 T:1 Prev: 3 New: 3
+Registers ff7 00 00 00
+
+Read PC(03)     NOP             JUMP 03         NOP             NOP
+No BPT Hit      -               -               -               -
+PC:03
+-               -               -               -               -
+PC:04
+ P:0 T:0
+
+Read PC(04)     NOP             NOP             JUMP 03         NOP
+Pred Taken      -               -               -               -
+PC:08
+-               -               -               -               -
+PC:08
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
+No BPT Hit      ff7 != 0?       -               -               -
+PC:08
+PC+ A:T, P:T    -               -               -               -
+PC:09
+ P:1 T:1 Prev: 3 New: 3
+
+Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
+No BPT Hit      -               -               -               -
+PC:09
+-               -               -               -               -
+PC:0a
+ P:0 T:0
+
+Read PC(0a)     R0 = R0 + 01    NOP             if R0!=0,PC<-EA NOP
+No BPT Hit      a<-ff7 imm<-01  -               -               -
+PC:0a
+-               -               -               -               -
+PC:0b
+ P:0 T:0
+
+Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
+No BPT Hit      -               A:ff7; IMM:01   -               -
+PC:0b
+-               -               -               -               -
+PC:0c
+ P:0 T:0
+
+Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
+Pred Taken      -               -               passthru        -
+PC:03
+-               -               -               -               -
+PC:03
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
+No BPT Hit      imm<-03         -               -               -
+PC:03
+PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ff8
+PC:03
+ P:1 T:1 Prev: 3 New: 3
+Registers ff8 00 00 00
+
+Read PC(03)     NOP             JUMP 03         NOP             NOP
+No BPT Hit      -               -               -               -
+PC:03
+-               -               -               -               -
+PC:04
+ P:0 T:0
+
+Read PC(04)     NOP             NOP             JUMP 03         NOP
+Pred Taken      -               -               -               -
+PC:08
+-               -               -               -               -
+PC:08
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
+No BPT Hit      ff8 != 0?       -               -               -
+PC:08
+PC+ A:T, P:T    -               -               -               -
+PC:09
+ P:1 T:1 Prev: 3 New: 3
+
+Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
+No BPT Hit      -               -               -               -
+PC:09
+-               -               -               -               -
+PC:0a
+ P:0 T:0
+
+Read PC(0a)     R0 = R0 + 01    NOP             if R0!=0,PC<-EA NOP
+No BPT Hit      a<-ff8 imm<-01  -               -               -
+PC:0a
+-               -               -               -               -
+PC:0b
+ P:0 T:0
+
+Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
+No BPT Hit      -               A:ff8; IMM:01   -               -
+PC:0b
+-               -               -               -               -
+PC:0c
+ P:0 T:0
+
+Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
+Pred Taken      -               -               passthru        -
+PC:03
+-               -               -               -               -
+PC:03
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
+No BPT Hit      imm<-03         -               -               -
+PC:03
+PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ff9
+PC:03
+ P:1 T:1 Prev: 3 New: 3
+Registers ff9 00 00 00
+
+Read PC(03)     NOP             JUMP 03         NOP             NOP
+No BPT Hit      -               -               -               -
+PC:03
+-               -               -               -               -
+PC:04
+ P:0 T:0
+
+Read PC(04)     NOP             NOP             JUMP 03         NOP
+Pred Taken      -               -               -               -
+PC:08
+-               -               -               -               -
+PC:08
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
+No BPT Hit      ff9 != 0?       -               -               -
+PC:08
+PC+ A:T, P:T    -               -               -               -
+PC:09
+ P:1 T:1 Prev: 3 New: 3
+
+Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
+No BPT Hit      -               -               -               -
+PC:09
+-               -               -               -               -
+PC:0a
+ P:0 T:0
+
+Read PC(0a)     R0 = R0 + 01    NOP             if R0!=0,PC<-EA NOP
+No BPT Hit      a<-ff9 imm<-01  -               -               -
+PC:0a
+-               -               -               -               -
+PC:0b
+ P:0 T:0
+
+Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
+No BPT Hit      -               A:ff9; IMM:01   -               -
+PC:0b
+-               -               -               -               -
+PC:0c
+ P:0 T:0
+
+Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
+Pred Taken      -               -               passthru        -
+PC:03
+-               -               -               -               -
+PC:03
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
+No BPT Hit      imm<-03         -               -               -
+PC:03
+PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ffa
+PC:03
+ P:1 T:1 Prev: 3 New: 3
+Registers ffa 00 00 00
+
+Read PC(03)     NOP             JUMP 03         NOP             NOP
+No BPT Hit      -               -               -               -
+PC:03
+-               -               -               -               -
+PC:04
+ P:0 T:0
+
+Read PC(04)     NOP             NOP             JUMP 03         NOP
+Pred Taken      -               -               -               -
+PC:08
+-               -               -               -               -
+PC:08
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
+No BPT Hit      ffa != 0?       -               -               -
+PC:08
+PC+ A:T, P:T    -               -               -               -
+PC:09
+ P:1 T:1 Prev: 3 New: 3
+
+Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
+No BPT Hit      -               -               -               -
+PC:09
+-               -               -               -               -
+PC:0a
+ P:0 T:0
+
+Read PC(0a)     R0 = R0 + 01    NOP             if R0!=0,PC<-EA NOP
+No BPT Hit      a<-ffa imm<-01  -               -               -
+PC:0a
+-               -               -               -               -
+PC:0b
+ P:0 T:0
+
+Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
+No BPT Hit      -               A:ffa; IMM:01   -               -
+PC:0b
+-               -               -               -               -
+PC:0c
+ P:0 T:0
+
+Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
+Pred Taken      -               -               passthru        -
+PC:03
+-               -               -               -               -
+PC:03
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
+No BPT Hit      imm<-03         -               -               -
+PC:03
+PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ffb
+PC:03
+ P:1 T:1 Prev: 3 New: 3
+Registers ffb 00 00 00
+
+Read PC(03)     NOP             JUMP 03         NOP             NOP
+No BPT Hit      -               -               -               -
+PC:03
+-               -               -               -               -
+PC:04
+ P:0 T:0
+
+Read PC(04)     NOP             NOP             JUMP 03         NOP
+Pred Taken      -               -               -               -
+PC:08
+-               -               -               -               -
+PC:08
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
+No BPT Hit      ffb != 0?       -               -               -
+PC:08
+PC+ A:T, P:T    -               -               -               -
+PC:09
+ P:1 T:1 Prev: 3 New: 3
+
+Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
+No BPT Hit      -               -               -               -
+PC:09
+-               -               -               -               -
+PC:0a
+ P:0 T:0
+
+Read PC(0a)     R0 = R0 + 01    NOP             if R0!=0,PC<-EA NOP
+No BPT Hit      a<-ffb imm<-01  -               -               -
+PC:0a
+-               -               -               -               -
+PC:0b
+ P:0 T:0
+
+Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
+No BPT Hit      -               A:ffb; IMM:01   -               -
+PC:0b
+-               -               -               -               -
+PC:0c
+ P:0 T:0
+
+Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
+Pred Taken      -               -               passthru        -
+PC:03
+-               -               -               -               -
+PC:03
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
+No BPT Hit      imm<-03         -               -               -
+PC:03
+PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ffc
+PC:03
+ P:1 T:1 Prev: 3 New: 3
+Registers ffc 00 00 00
+
+Read PC(03)     NOP             JUMP 03         NOP             NOP
+No BPT Hit      -               -               -               -
+PC:03
+-               -               -               -               -
+PC:04
+ P:0 T:0
+
+Read PC(04)     NOP             NOP             JUMP 03         NOP
+Pred Taken      -               -               -               -
+PC:08
+-               -               -               -               -
+PC:08
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
+No BPT Hit      ffc != 0?       -               -               -
+PC:08
+PC+ A:T, P:T    -               -               -               -
+PC:09
+ P:1 T:1 Prev: 3 New: 3
+
+Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
+No BPT Hit      -               -               -               -
+PC:09
+-               -               -               -               -
+PC:0a
+ P:0 T:0
+
+Read PC(0a)     R0 = R0 + 01    NOP             if R0!=0,PC<-EA NOP
+No BPT Hit      a<-ffc imm<-01  -               -               -
+PC:0a
+-               -               -               -               -
+PC:0b
+ P:0 T:0
+
+Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
+No BPT Hit      -               A:ffc; IMM:01   -               -
+PC:0b
+-               -               -               -               -
+PC:0c
+ P:0 T:0
+
+Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
+Pred Taken      -               -               passthru        -
+PC:03
+-               -               -               -               -
+PC:03
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
+No BPT Hit      imm<-03         -               -               -
+PC:03
+PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ffd
+PC:03
+ P:1 T:1 Prev: 3 New: 3
+Registers ffd 00 00 00
+
+Read PC(03)     NOP             JUMP 03         NOP             NOP
+No BPT Hit      -               -               -               -
+PC:03
+-               -               -               -               -
+PC:04
+ P:0 T:0
+
+Read PC(04)     NOP             NOP             JUMP 03         NOP
+Pred Taken      -               -               -               -
+PC:08
+-               -               -               -               -
+PC:08
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
+No BPT Hit      ffd != 0?       -               -               -
+PC:08
+PC+ A:T, P:T    -               -               -               -
+PC:09
+ P:1 T:1 Prev: 3 New: 3
+
+Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
+No BPT Hit      -               -               -               -
+PC:09
+-               -               -               -               -
+PC:0a
+ P:0 T:0
+
+Read PC(0a)     R0 = R0 + 01    NOP             if R0!=0,PC<-EA NOP
+No BPT Hit      a<-ffd imm<-01  -               -               -
+PC:0a
+-               -               -               -               -
+PC:0b
+ P:0 T:0
+
+Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
+No BPT Hit      -               A:ffd; IMM:01   -               -
+PC:0b
+-               -               -               -               -
+PC:0c
+ P:0 T:0
+
+Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
+Pred Taken      -               -               passthru        -
+PC:03
+-               -               -               -               -
+PC:03
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
+No BPT Hit      imm<-03         -               -               -
+PC:03
+PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ffe
+PC:03
+ P:1 T:1 Prev: 3 New: 3
+Registers ffe 00 00 00
+
+Read PC(03)     NOP             JUMP 03         NOP             NOP
+No BPT Hit      -               -               -               -
+PC:03
+-               -               -               -               -
+PC:04
+ P:0 T:0
+
+Read PC(04)     NOP             NOP             JUMP 03         NOP
+Pred Taken      -               -               -               -
+PC:08
+-               -               -               -               -
+PC:08
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
+No BPT Hit      ffe != 0?       -               -               -
+PC:08
+PC+ A:T, P:T    -               -               -               -
+PC:09
+ P:1 T:1 Prev: 3 New: 3
+
+Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
+No BPT Hit      -               -               -               -
+PC:09
+-               -               -               -               -
+PC:0a
+ P:0 T:0
+
+Read PC(0a)     R0 = R0 + 01    NOP             if R0!=0,PC<-EA NOP
+No BPT Hit      a<-ffe imm<-01  -               -               -
+PC:0a
+-               -               -               -               -
+PC:0b
+ P:0 T:0
+
+Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
+No BPT Hit      -               A:ffe; IMM:01   -               -
+PC:0b
+-               -               -               -               -
+PC:0c
+ P:0 T:0
+
+Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
+Pred Taken      -               -               passthru        -
+PC:03
+-               -               -               -               -
+PC:03
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
+No BPT Hit      imm<-03         -               -               -
+PC:03
+PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-fff
+PC:03
+ P:1 T:1 Prev: 3 New: 3
+Registers fff 00 00 00
+
+Read PC(03)     NOP             JUMP 03         NOP             NOP
+No BPT Hit      -               -               -               -
+PC:03
+-               -               -               -               -
+PC:04
+ P:0 T:0
+
+Read PC(04)     NOP             NOP             JUMP 03         NOP
+Pred Taken      -               -               -               -
+PC:08
+-               -               -               -               -
+PC:08
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
+No BPT Hit      fff != 0?       -               -               -
+PC:08
+PC+ A:T, P:T    -               -               -               -
+PC:09
+ P:1 T:1 Prev: 3 New: 3
+
+Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
+No BPT Hit      -               -               -               -
+PC:09
+-               -               -               -               -
+PC:0a
+ P:0 T:0
+
+Read PC(0a)     R0 = R0 + 01    NOP             if R0!=0,PC<-EA NOP
+No BPT Hit      a<-fff imm<-01  -               -               -
+PC:0a
+-               -               -               -               -
+PC:0b
+ P:0 T:0
+
+Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
+No BPT Hit      -               A:fff; IMM:01   -               -
+PC:0b
+-               -               -               -               -
+PC:0c
+ P:0 T:0
+
+Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
+Pred Taken      -               -               passthru        -
+PC:03
+-               -               -               -               -
+PC:03
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
+No BPT Hit      imm<-03         -               -               -
+PC:03
+PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-00
+PC:03
+ P:1 T:1 Prev: 3 New: 3
+Registers 00 00 00 00
+
+Read PC(03)     NOP             JUMP 03         NOP             NOP
+No BPT Hit      -               -               -               -
+PC:03
+-               -               -               -               -
+PC:04
+ P:0 T:0
+
+Read PC(04)     NOP             NOP             JUMP 03         NOP
+Pred Taken      -               -               -               -
+PC:08
+-               -               -               -               -
+PC:08
+H:3 P:3 P:0 T:0
+0:04->08,3[2,2,1,3]  1:0c->03,3[2,2,1,3]  
+
+Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
+No BPT Hit      00 != 0?        -               -               -
+PC:08
+PC? A:F, P:T    -               -               -               -
+PC:05
+ P:1 T:0 Prev: 3 New: 2
+
+Read PC(05)     NOP             if R0!=0,PC<-EA NOP             NOP
+No BPT Hit      -               -               -               -
+PC:05
+-               -               -               -               -
+PC:06
+ P:0 T:0
+
+Read PC(06)     NOP             NOP             if R0!=0,PC<-EA NOP
+No BPT Hit      -               -               -               -
+PC:06
+-               -               -               -               -
+PC:07
+ P:0 T:0
+
+Read PC(07)     JUMP 0e         NOP             NOP             if R0!=0,PC<-EA
+No BPT Hit      imm<-0e         -               -               -
+PC:07
+PC? B02<-PC @06 pc<-0e          -               -               -
+PC:0e
+ P:0 T:1
+
+Read PC(0e)     NOP             JUMP 0e         NOP             NOP
+No BPT Hit      -               -               -               -
+PC:0e
+-               -               -               -               -
+PC:0f
+ P:0 T:0
+
+Read PC(0f)     HALT            NOP             JUMP 0e         NOP
+No BPT Hit      -               -               -               -
+PC:0f
+-               -               -               -               -
+PC:10
+ P:0 T:0
+
+Read PC(10)     NOP             HALT            NOP             JUMP 0e
+No BPT Hit      -               -               -               -
+PC:10
+-               -               -               -               -
+PC:11
+ P:0 T:0
+
+Read PC(11)     NOP             NOP             HALT            NOP
+No BPT Hit      -               -               -               -
+PC:11
+-               -               -               -               -
+PC:12
+ P:0 T:0
+
+Read PC(12)     NOP             NOP             NOP             HALT
+No BPT Hit      -               -               -               -
+PC:12
+-               -               -               -               Smartest Off
+PC:13
+ P:0 T:0
+
+BPT Statistics
+==============
+Predictions:	31
+Failures:	07
+Accuracy:	77%
+Branch Swaps:	00
+Saturation:	1.00
+
+
+MACHINE HALTED due to halt instruction
+

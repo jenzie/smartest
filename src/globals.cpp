@@ -22,11 +22,17 @@ bool done ( false );		// is the simulation over?
 bool halt_inst ( false );    // did we halt because of the halt instruction?
 
 /**
+ * Constant Registers
+ */
+StorageObject const_one( "CONST_ONE", DATA_BITS, 1 );
+ 
+/**
  * Printing variables.
  */
 char inst_str[16];
 char inst_output[16];
 char inst_total_output[80];
+char debug_msg[80];
 bool reg_changed( false );
 
 /**
@@ -40,6 +46,16 @@ bool bpt_hit( false );
 bool bpt_taken( false );
 bool bpt_jump( false );
 bool bpt_predicted( false );
+bool bpt_index( false );
+bool bubble( false );
+
+// Passing state to next phase
+bool bpt_d_update( false );
+bool bpt_d_hit( false );
+bool bpt_d_taken( false );
+bool bpt_d_jump( false );
+bool bpt_d_predicted( false );
+bool bpt_d_index( false );
 
 /**
  * BPT Statistics
@@ -75,11 +91,15 @@ StorageObject** bpt_rbank;
 Counter pc( "PC", ADDR_BITS );
 Bus pc_bus( "PC_Bus", ADDR_BITS );
 bool incr_override( false );
+BusALU incr_alu( "Incr_ALU", ADDR_BITS );
+Bus predict_bus( "Predict_Bus", ADDR_BITS );
+Bus inst_bus( "Inst_Bus", DATA_BITS );
 
 // Fetch -> Decode
 StorageObject fd_ir( "FD_IR", DATA_BITS );
 StorageObject fd_pc( "FD_PC", ADDR_BITS );
 StorageObject fd_npc( "FD_NPC", ADDR_BITS );
+StorageObject fd_nop( "FD_NOP", ADDR_BITS );
 Bus fetch_bus( "Fetch_Bus", ADDR_BITS );
 
 // Decode
@@ -90,6 +110,7 @@ Bus decode_branch_bus( "Decode_Branch_Bus", ADDR_BITS );
 
 // Decode -> Execute
 StorageObject dx_ir( "DX_IR", DATA_BITS );
+StorageObject dx_pc( "DX_PC", ADDR_BITS );
 StorageObject dx_imm( "DX_IMM", ADDR_BITS );
 StorageObject dx_a( "DX_A", DATA_BITS );
 StorageObject dx_b( "DX_B", DATA_BITS );

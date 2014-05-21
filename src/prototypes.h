@@ -20,12 +20,14 @@ long parse_rt( StorageObject & );
 long parse_rd( StorageObject & );
 long get_reg_value( int );
 long parse_opc( StorageObject & );
+bool can_branch( StorageObject & );
 
 // BPT
 void init_table();
 int check_entry( long );
 void add_entry( long, bool );
 void update_entry( long, bool );
+bool predict_taken( int );
 
 // Stages
 void fetch();
