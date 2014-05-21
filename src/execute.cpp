@@ -428,19 +428,7 @@ void decode_second(){
 	int reg_rt = parse_rt( fd_ir );
 	
 	switch( d_curr_opc ) {
-		case 0: // NOP
-			sprintf(inst_output, "-");
-			break;
-		case 1: // Add
-			sprintf(inst_output, "-");
-			break;
-		case 2: // Addi
-			sprintf(inst_output, "-");
-			break;
-		case 10:
-			sprintf(inst_output, "-");
-			break;
-		case 12:
+		case 12: // fall through; print case 13
 		case 13:
 		
 			// If we predicted not-taken, and we are taking, then we need to
@@ -465,9 +453,6 @@ void decode_second(){
 				pc.latchFrom( offset_alu.OUT() );
 				sprintf(inst_output, "pc<-%02lx", dx_imm.value());
 			}
-			break;
-		case 15:
-			sprintf(inst_output, "-");
 			break;
 		default:
 			sprintf(inst_output, "-");
@@ -494,17 +479,15 @@ void decode_second(){
 void execute_second(){
 
 	switch(x_curr_opc){
-		case 0:
+		case 0:  // fall through; print case 15
+		case 12:
+		case 13:
+		case 14:
+		case 15:
 			sprintf(inst_output, "-");
-			break;
-		case 1:
-			sprintf(inst_output, "ALU_OUT<-%02lx", xm_alu_out.value());
-			break;
-		case 10:
-			sprintf(inst_output, "ALU_OUT<-%02lx", xm_alu_out.value() );
 			break;
 		default:
-			sprintf(inst_output, "-");
+			sprintf(inst_output, "ALU_OUT<-%02lx", xm_alu_out.value());
 	}
 	
 	xm_bus[0]->IN().pullFrom(dx_ir);
@@ -515,13 +498,12 @@ void execute_second(){
 void memory_second(){
 
 	switch( m_curr_opc ) {
-		case 0: // NOP
-			sprintf(inst_output, "-");
-			break;
-		case 1: // Add
-			sprintf(inst_output, "-");
-			break;
 		case 10:
+			data_mem.WRITE().pullFrom(xm_a);
+			data_mem.write();
+			sprintf(inst_output, "MEM[%02lx]<-A", xm_alu_out.value());
+			break;
+		case 11:
 			mw_mdr.latchFrom(data_mem.READ());
 			data_mem.read();
 			sprintf(inst_output, "MDR<-MEM[%02lx]", xm_alu_out.value());
@@ -540,22 +522,12 @@ void writeback_second(){
 	reg_changed = false;
 	
 	switch( w_curr_opc ) {
-		case 0: // NOP
-			sprintf(inst_output, "-");
-			break;
-		case 1: // Add
-		case 2: // Addi
-			sprintf(inst_output, "R%lx<-%02lx",
-				mw_ir(DATA_BITS - 9, DATA_BITS - 10), mw_alu_out.value());
-			wd_bus.IN().pullFrom(mw_alu_out);
-			reg_file[mw_ir(DATA_BITS - 9, DATA_BITS - 10)]->latchFrom(wd_bus.OUT());
-			reg_changed = true;
-			break;
 		case 10:
 			sprintf(inst_output, "R%lx<-%02lx",
 				mw_ir(DATA_BITS - 5, DATA_BITS - 6), mw_mdr.value());
 			wd_bus.IN().pullFrom(mw_mdr);
-			reg_file[mw_ir(DATA_BITS - 5, DATA_BITS - 6)]->latchFrom(wd_bus.OUT());
+			reg_file[
+				mw_ir(DATA_BITS - 5, DATA_BITS - 6)]->latchFrom(wd_bus.OUT());
 			reg_changed = true;
 			break;
 		case 15:
@@ -564,6 +536,11 @@ void writeback_second(){
 			done = true;
 			break;
 		default:
-			sprintf(inst_output, "-");
+			sprintf(inst_output, "R%lx<-%02lx",
+				mw_ir(DATA_BITS - 9, DATA_BITS - 10), mw_alu_out.value());
+			wd_bus.IN().pullFrom(mw_alu_out);
+			reg_file[
+				mw_ir(DATA_BITS - 9, DATA_BITS - 10)]->latchFrom(wd_bus.OUT());
+			reg_changed = true;
 	}
 }
