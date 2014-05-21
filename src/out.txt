@@ -8,19 +8,19 @@ Read PC(00)     NOP             NOP             NOP             NOP
 No BPT Hit      -               -               -               -
 -               -               -               -               -
 
-Read PC(01)     MEM[R0+00]<-R0  NOP             NOP             NOP
+Read PC(01)     R0<-MEM[R0+00]  NOP             NOP             NOP
 No BPT Hit      a<-00 imm<-00   -               -               -
 -               -               -               -               -
 
-Read PC(02)     NOP             MEM[R0+00]<-R0  NOP             NOP
+Read PC(02)     NOP             R0<-MEM[R0+00]  NOP             NOP
 No BPT Hit      -               A:00; IMM:00    -               -
 -               -               ALU_OUT<-00     -               -
 
-Read PC(03)     NOP             NOP             MEM[R0+00]<-R0  NOP
+Read PC(03)     NOP             NOP             R0<-MEM[R0+00]  NOP
 No BPT Hit      -               -               MEM[ALU_OUT]    -
 -               -               -               MDR<-MEM[00]    -
 
-Read PC(04)     NOP             NOP             NOP             MEM[R0+00]<-R0
+Read PC(04)     NOP             NOP             NOP             R0<-MEM[R0+00]
 No BPT Hit      -               -               -               -
 -               -               -               -               R0<-fe0
 Registers fe0 00 00 00
@@ -39,11 +39,12 @@ No BPT Hit      -               -               -               -
 
 Read PC(0a)     R0 = R0 + 01    NOP             NOP             if R0!=0,PC<-EA
 No BPT Hit      a<-fe0 imm<-01  -               -               -
--               -               -               -               -
+-               -               -               -               R2<-00
+Registers fe0 00 00 00
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             NOP
 No BPT Hit      -               A:fe0; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-fe1    -               -
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 No BPT Hit      -               -               passthru        -
@@ -64,7 +65,8 @@ Pred Not Taken  -               -               -               -
 
 Read PC(05)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      fe1 != 0?       -               -               -
-PC? A:T, P:F    pc<-08          -               -               -
+PC? A:T, P:F    pc<-08          -               -               R0<-fe1
+Registers fe1 00 00 00
 
 Read PC(08)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -76,11 +78,12 @@ No BPT Hit      -               -               -               -
 
 Read PC(0a)     R0 = R0 + 01    NOP             NOP             if R0!=0,PC<-EA
 No BPT Hit      a<-fe1 imm<-01  -               -               -
--               -               -               -               -
+-               -               -               -               R2<-fe1
+Registers fe1 00 fe1 00
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             NOP
 No BPT Hit      -               A:fe1; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-fe2    -               -
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Not Taken  -               -               passthru        -
@@ -89,7 +92,7 @@ Pred Not Taken  -               -               passthru        -
 Read PC(0d)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC? A:T, P:F    pc<-03          -               -               R0<-fe2
-Registers fe2 00 00 00
+Registers fe2 00 fe1 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -101,7 +104,8 @@ Pred Not Taken  -               -               -               -
 
 Read PC(05)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      fe2 != 0?       -               -               -
-PC? A:T, P:F    pc<-08          -               -               -
+PC? A:T, P:F    pc<-08          -               -               R0<-fe2
+Registers fe2 00 fe1 00
 
 Read PC(08)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -113,11 +117,12 @@ No BPT Hit      -               -               -               -
 
 Read PC(0a)     R0 = R0 + 01    NOP             NOP             if R0!=0,PC<-EA
 No BPT Hit      a<-fe2 imm<-01  -               -               -
--               -               -               -               -
+-               -               -               -               R2<-fe2
+Registers fe2 00 fe2 00
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             NOP
 No BPT Hit      -               A:fe2; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-fe3    -               -
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Not Taken  -               -               passthru        -
@@ -126,7 +131,7 @@ Pred Not Taken  -               -               passthru        -
 Read PC(0d)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC? A:T, P:F    pc<-03          -               -               R0<-fe3
-Registers fe3 00 00 00
+Registers fe3 00 fe2 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -138,7 +143,8 @@ Pred Not Taken  -               -               -               -
 
 Read PC(05)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      fe3 != 0?       -               -               -
-PC? A:T, P:F    pc<-08          -               -               -
+PC? A:T, P:F    pc<-08          -               -               R0<-fe3
+Registers fe3 00 fe2 00
 
 Read PC(08)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -150,11 +156,12 @@ No BPT Hit      -               -               -               -
 
 Read PC(0a)     R0 = R0 + 01    NOP             NOP             if R0!=0,PC<-EA
 No BPT Hit      a<-fe3 imm<-01  -               -               -
--               -               -               -               -
+-               -               -               -               R2<-fe3
+Registers fe3 00 fe3 00
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             NOP
 No BPT Hit      -               A:fe3; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-fe4    -               -
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Not Taken  -               -               passthru        -
@@ -163,7 +170,7 @@ Pred Not Taken  -               -               passthru        -
 Read PC(0d)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC? A:T, P:F    pc<-03          -               -               R0<-fe4
-Registers fe4 00 00 00
+Registers fe4 00 fe3 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -175,7 +182,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      fe4 != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-fe4
+Registers fe4 00 fe3 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -187,7 +195,8 @@ No BPT Hit      a<-fe4 imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:fe4; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-fe5    -               R2<-fe4
+Registers fe4 00 fe4 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -196,7 +205,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-fe5
-Registers fe5 00 00 00
+Registers fe5 00 fe4 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -208,7 +217,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      fe5 != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-fe5
+Registers fe5 00 fe4 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -220,7 +230,8 @@ No BPT Hit      a<-fe5 imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:fe5; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-fe6    -               R2<-fe5
+Registers fe5 00 fe5 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -229,7 +240,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-fe6
-Registers fe6 00 00 00
+Registers fe6 00 fe5 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -241,7 +252,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      fe6 != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-fe6
+Registers fe6 00 fe5 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -253,7 +265,8 @@ No BPT Hit      a<-fe6 imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:fe6; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-fe7    -               R2<-fe6
+Registers fe6 00 fe6 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -262,7 +275,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-fe7
-Registers fe7 00 00 00
+Registers fe7 00 fe6 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -274,7 +287,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      fe7 != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-fe7
+Registers fe7 00 fe6 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -286,7 +300,8 @@ No BPT Hit      a<-fe7 imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:fe7; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-fe8    -               R2<-fe7
+Registers fe7 00 fe7 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -295,7 +310,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-fe8
-Registers fe8 00 00 00
+Registers fe8 00 fe7 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -307,7 +322,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      fe8 != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-fe8
+Registers fe8 00 fe7 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -319,7 +335,8 @@ No BPT Hit      a<-fe8 imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:fe8; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-fe9    -               R2<-fe8
+Registers fe8 00 fe8 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -328,7 +345,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-fe9
-Registers fe9 00 00 00
+Registers fe9 00 fe8 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -340,7 +357,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      fe9 != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-fe9
+Registers fe9 00 fe8 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -352,7 +370,8 @@ No BPT Hit      a<-fe9 imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:fe9; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-fea    -               R2<-fe9
+Registers fe9 00 fe9 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -361,7 +380,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-fea
-Registers fea 00 00 00
+Registers fea 00 fe9 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -373,7 +392,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      fea != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-fea
+Registers fea 00 fe9 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -385,7 +405,8 @@ No BPT Hit      a<-fea imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:fea; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-feb    -               R2<-fea
+Registers fea 00 fea 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -394,7 +415,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-feb
-Registers feb 00 00 00
+Registers feb 00 fea 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -406,7 +427,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      feb != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-feb
+Registers feb 00 fea 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -418,7 +440,8 @@ No BPT Hit      a<-feb imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:feb; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-fec    -               R2<-feb
+Registers feb 00 feb 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -427,7 +450,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-fec
-Registers fec 00 00 00
+Registers fec 00 feb 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -439,7 +462,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      fec != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-fec
+Registers fec 00 feb 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -451,7 +475,8 @@ No BPT Hit      a<-fec imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:fec; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-fed    -               R2<-fec
+Registers fec 00 fec 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -460,7 +485,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-fed
-Registers fed 00 00 00
+Registers fed 00 fec 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -472,7 +497,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      fed != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-fed
+Registers fed 00 fec 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -484,7 +510,8 @@ No BPT Hit      a<-fed imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:fed; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-fee    -               R2<-fed
+Registers fed 00 fed 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -493,7 +520,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-fee
-Registers fee 00 00 00
+Registers fee 00 fed 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -505,7 +532,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      fee != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-fee
+Registers fee 00 fed 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -517,7 +545,8 @@ No BPT Hit      a<-fee imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:fee; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-fef    -               R2<-fee
+Registers fee 00 fee 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -526,7 +555,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-fef
-Registers fef 00 00 00
+Registers fef 00 fee 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -538,7 +567,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      fef != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-fef
+Registers fef 00 fee 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -550,7 +580,8 @@ No BPT Hit      a<-fef imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:fef; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-ff0    -               R2<-fef
+Registers fef 00 fef 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -559,7 +590,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ff0
-Registers ff0 00 00 00
+Registers ff0 00 fef 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -571,7 +602,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      ff0 != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-ff0
+Registers ff0 00 fef 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -583,7 +615,8 @@ No BPT Hit      a<-ff0 imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:ff0; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-ff1    -               R2<-ff0
+Registers ff0 00 ff0 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -592,7 +625,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ff1
-Registers ff1 00 00 00
+Registers ff1 00 ff0 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -604,7 +637,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      ff1 != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-ff1
+Registers ff1 00 ff0 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -616,7 +650,8 @@ No BPT Hit      a<-ff1 imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:ff1; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-ff2    -               R2<-ff1
+Registers ff1 00 ff1 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -625,7 +660,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ff2
-Registers ff2 00 00 00
+Registers ff2 00 ff1 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -637,7 +672,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      ff2 != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-ff2
+Registers ff2 00 ff1 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -649,7 +685,8 @@ No BPT Hit      a<-ff2 imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:ff2; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-ff3    -               R2<-ff2
+Registers ff2 00 ff2 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -658,7 +695,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ff3
-Registers ff3 00 00 00
+Registers ff3 00 ff2 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -670,7 +707,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      ff3 != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-ff3
+Registers ff3 00 ff2 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -682,7 +720,8 @@ No BPT Hit      a<-ff3 imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:ff3; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-ff4    -               R2<-ff3
+Registers ff3 00 ff3 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -691,7 +730,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ff4
-Registers ff4 00 00 00
+Registers ff4 00 ff3 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -703,7 +742,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      ff4 != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-ff4
+Registers ff4 00 ff3 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -715,7 +755,8 @@ No BPT Hit      a<-ff4 imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:ff4; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-ff5    -               R2<-ff4
+Registers ff4 00 ff4 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -724,7 +765,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ff5
-Registers ff5 00 00 00
+Registers ff5 00 ff4 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -736,7 +777,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      ff5 != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-ff5
+Registers ff5 00 ff4 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -748,7 +790,8 @@ No BPT Hit      a<-ff5 imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:ff5; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-ff6    -               R2<-ff5
+Registers ff5 00 ff5 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -757,7 +800,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ff6
-Registers ff6 00 00 00
+Registers ff6 00 ff5 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -769,7 +812,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      ff6 != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-ff6
+Registers ff6 00 ff5 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -781,7 +825,8 @@ No BPT Hit      a<-ff6 imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:ff6; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-ff7    -               R2<-ff6
+Registers ff6 00 ff6 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -790,7 +835,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ff7
-Registers ff7 00 00 00
+Registers ff7 00 ff6 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -802,7 +847,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      ff7 != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-ff7
+Registers ff7 00 ff6 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -814,7 +860,8 @@ No BPT Hit      a<-ff7 imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:ff7; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-ff8    -               R2<-ff7
+Registers ff7 00 ff7 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -823,7 +870,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ff8
-Registers ff8 00 00 00
+Registers ff8 00 ff7 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -835,7 +882,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      ff8 != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-ff8
+Registers ff8 00 ff7 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -847,7 +895,8 @@ No BPT Hit      a<-ff8 imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:ff8; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-ff9    -               R2<-ff8
+Registers ff8 00 ff8 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -856,7 +905,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ff9
-Registers ff9 00 00 00
+Registers ff9 00 ff8 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -868,7 +917,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      ff9 != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-ff9
+Registers ff9 00 ff8 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -880,7 +930,8 @@ No BPT Hit      a<-ff9 imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:ff9; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-ffa    -               R2<-ff9
+Registers ff9 00 ff9 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -889,7 +940,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ffa
-Registers ffa 00 00 00
+Registers ffa 00 ff9 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -901,7 +952,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      ffa != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-ffa
+Registers ffa 00 ff9 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -913,7 +965,8 @@ No BPT Hit      a<-ffa imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:ffa; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-ffb    -               R2<-ffa
+Registers ffa 00 ffa 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -922,7 +975,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ffb
-Registers ffb 00 00 00
+Registers ffb 00 ffa 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -934,7 +987,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      ffb != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-ffb
+Registers ffb 00 ffa 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -946,7 +1000,8 @@ No BPT Hit      a<-ffb imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:ffb; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-ffc    -               R2<-ffb
+Registers ffb 00 ffb 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -955,7 +1010,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ffc
-Registers ffc 00 00 00
+Registers ffc 00 ffb 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -967,7 +1022,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      ffc != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-ffc
+Registers ffc 00 ffb 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -979,7 +1035,8 @@ No BPT Hit      a<-ffc imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:ffc; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-ffd    -               R2<-ffc
+Registers ffc 00 ffc 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -988,7 +1045,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ffd
-Registers ffd 00 00 00
+Registers ffd 00 ffc 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -1000,7 +1057,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      ffd != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-ffd
+Registers ffd 00 ffc 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -1012,7 +1070,8 @@ No BPT Hit      a<-ffd imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:ffd; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-ffe    -               R2<-ffd
+Registers ffd 00 ffd 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -1021,7 +1080,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-ffe
-Registers ffe 00 00 00
+Registers ffe 00 ffd 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -1033,7 +1092,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      ffe != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-ffe
+Registers ffe 00 ffd 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -1045,7 +1105,8 @@ No BPT Hit      a<-ffe imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:ffe; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-fff    -               R2<-ffe
+Registers ffe 00 ffe 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -1054,7 +1115,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-fff
-Registers fff 00 00 00
+Registers fff 00 ffe 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -1066,7 +1127,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      fff != 0?       -               -               -
-PC+ A:T, P:T    -               -               -               -
+PC+ A:T, P:T    -               -               -               R0<-fff
+Registers fff 00 ffe 00
 
 Read PC(09)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -1078,7 +1140,8 @@ No BPT Hit      a<-fff imm<-01  -               -               -
 
 Read PC(0b)     NOP             R0 = R0 + 01    NOP             if R0!=0,PC<-EA
 No BPT Hit      -               A:fff; IMM:01   -               -
--               -               -               -               -
+-               -               ALU_OUT<-00     -               R2<-fff
+Registers fff 00 fff 00
 
 Read PC(0c)     NOP             NOP             R0 = R0 + 01    NOP
 Pred Taken      -               -               passthru        -
@@ -1087,7 +1150,7 @@ Pred Taken      -               -               passthru        -
 Read PC(03)     JUMP 03         NOP             NOP             R0 = R0 + 01
 No BPT Hit      imm<-03         -               -               -
 PC+ A:T, P:T    PC+ A:T, P:T    -               -               R0<-00
-Registers 00 00 00 00
+Registers 00 00 fff 00
 
 Read PC(03)     NOP             JUMP 03         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -1099,7 +1162,8 @@ Pred Taken      -               -               -               -
 
 Read PC(08)     if R0!=0,PC<-EA NOP             NOP             JUMP 03
 No BPT Hit      00 != 0?        -               -               -
-PC? A:F, P:T    -               -               -               -
+PC? A:F, P:T    -               -               -               R0<-00
+Registers 00 00 fff 00
 
 Read PC(05)     NOP             if R0!=0,PC<-EA NOP             NOP
 No BPT Hit      -               -               -               -
@@ -1111,7 +1175,8 @@ No BPT Hit      -               -               -               -
 
 Read PC(07)     JUMP 0e         NOP             NOP             if R0!=0,PC<-EA
 No BPT Hit      imm<-0e         -               -               -
-PC? B02<-PC @06 pc<-0e          -               -               -
+PC? B02<-PC @06 pc<-0e          -               -               R2<-00
+Registers 00 00 00 00
 
 Read PC(0e)     NOP             JUMP 0e         NOP             NOP
 No BPT Hit      -               -               -               -
@@ -1123,7 +1188,8 @@ No BPT Hit      -               -               -               -
 
 Read PC(10)     NOP             HALT            NOP             JUMP 0e
 No BPT Hit      -               -               -               -
--               -               -               -               -
+-               -               -               -               R3<-00
+Registers 00 00 00 00
 
 Read PC(11)     NOP             NOP             HALT            NOP
 No BPT Hit      -               -               -               -

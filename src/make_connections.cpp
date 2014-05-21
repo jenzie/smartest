@@ -74,6 +74,7 @@ void make_connections() {
 	dx_imm.connectsTo( exec_alu.OP2() );
 	for( int i = 0; i < 3; i++ ){
 		xm_b.connectsTo( xm_bus[ i ]->OUT() );
+		xm_a.connectsTo( xm_bus[ i ]->OUT() );
 		dx_a.connectsTo( xm_bus[ i ]->IN() );
 		dx_b.connectsTo( xm_bus[ i ]->IN() );
 		dx_imm.connectsTo( xm_bus[ i ]->IN() );
@@ -83,7 +84,7 @@ void make_connections() {
 	
 	// Memory
 	mw_mdr.connectsTo( data_mem.READ() );
-	xm_b.connectsTo( data_mem.WRITE() );
+	xm_a.connectsTo( data_mem.WRITE() );
 	for( int i = 0; i < 3; i++ ){
 		xm_alu_out.connectsTo( mw_bus[ i ]->IN() );
 		data_mem.MAR().connectsTo( mw_bus[ i ]->OUT() );

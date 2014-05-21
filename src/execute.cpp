@@ -506,7 +506,7 @@ void decode_second(){
 		
 			// If we predicted not-taken, and we are taking, then we need to
 			// override the current PC.
-			if( bpt_d_taken && !bpt_d_predicted ){
+			if( bpt_d_taken && (!bpt_d_predicted || !bpt_d_hit) ){
 				sprintf(inst_output, "pc<-%02lx", parse_ea( fd_ir, false ) );
 				offset_alu.OP1().pullFrom( dx_imm );
 				offset_alu.OP2().pullFrom( *reg_file[ parse_rt( fd_ir ) ] );
@@ -603,7 +603,10 @@ void writeback_second(){
 	reg_changed = false;
 	
 	switch( w_curr_opc ) {
-		case 10:
+		case 0:
+			sprintf(inst_output, "-");
+			break;
+		case 11:
 			sprintf(inst_output, "R%lx<-%02lx",
 				mw_ir(DATA_BITS - 5, DATA_BITS - 6), mw_mdr.value());
 			wd_bus.IN().pullFrom(mw_mdr);
