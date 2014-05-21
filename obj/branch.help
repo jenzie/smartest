@@ -1,0 +1,9 @@
+This file loads a large, near over-flowed value into the A (first) register.
+
+It then loops, checking to see if the A register is zero.  If not, it will
+increment the register until it overflows, and becomes zero.
+
+Once zero, the program terminates.
+
+Judicious use of NOPs is to compensate for the lack of forwarding,
+and lack of complete testing.
