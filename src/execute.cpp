@@ -94,6 +94,10 @@ void assemble() {
 	cout << endl;
 }
 
+/**
+ * Handles the first clock tick for the Fetch stage of the pipeline. Will also
+ * do branch prediction, and replace the PC as necessary.
+ */
 void fetch(){
 	
 	sprintf(inst_str, "Read PC(%02lx)", pc.value() );
@@ -146,6 +150,11 @@ void fetch(){
 	inst_mem.MAR().latchFrom( inst_bus.OUT() );
 }
 
+/**
+ * Handels the first clock tick of the Decode stage.  Which mostly breaks up the
+ * IR into its respective parts, dumps registers into the pipeline for
+ * processing, and handles any necessary branch prediction setup.
+ */
 long decode(){
 
 	long opc = fd_ir(DATA_BITS - 1, DATA_BITS - 4);
@@ -227,6 +236,9 @@ long decode(){
 	return old_opc;
 }
 
+/**
+ * Handles the decode step for R type instructions.
+ */
 void decode_R_TYPE(){
 	dx_bus[0]->IN().pullFrom(*reg_file[parse_rs(fd_ir)]);
 	dx_bus[1]->IN().pullFrom(*reg_file[parse_rt(fd_ir)]);
@@ -237,6 +249,9 @@ void decode_R_TYPE(){
 		reg_file[parse_rt(fd_ir)]->value());
 }
 
+/**
+ * Handles the decode step for I type instructions.
+ */
 void decode_I_TYPE(){
 	dx_bus[0]->IN().pullFrom(*reg_file[parse_rt(fd_ir)]);
 	small_bus.IN().pullFrom(fd_ir);
@@ -246,9 +261,13 @@ void decode_I_TYPE(){
 		reg_file[parse_rt(fd_ir)]->value(), parse_imm(fd_ir, true));
 }
 
+/**
+ * Handles the first clock tick of the execute stage of the pipeline.  Either
+ * ALU instructions are carried out, or the EA for loads and stores are
+ * computed.
+ */
 long execute( long opc ){
 
-	//cout << "X\t" << opc << endl;
 	x_curr_opc = opc; // for second clock tick
 	make_inst_str(dx_ir);
 	
@@ -288,6 +307,10 @@ long execute( long opc ){
 	return old_opc;
 }
 
+/**
+ * Handles the execute stage for R type instructions, which is to perform the
+ * ALU operation.
+ */
 void execute_R_TYPE( BusALU::Operation op ){
 	exec_alu.OP1().pullFrom(dx_a);
 	exec_alu.OP2().pullFrom(dx_b);
@@ -296,6 +319,10 @@ void execute_R_TYPE( BusALU::Operation op ){
 	sprintf(inst_output, "A:%02lx; B:%02lx", dx_a.value(), dx_b.value());
 }
 
+/**
+ * Handles the execute stage for I type instructions, which is to calculate the
+ * EA.
+ */
 void execute_I_TYPE(){
 	exec_alu.OP1().pullFrom(dx_a);
 	exec_alu.OP2().pullFrom(dx_imm);
@@ -306,6 +333,11 @@ void execute_I_TYPE(){
 	sprintf(inst_output, "A:%02lx; IMM:%02lx", dx_a.value(), dx_imm.value());
 }
 
+/**
+ * Handles the first clock tick of the memory stage of the pipeline.  This stage
+ * is mostly a passthrough for all instructions but the load and store, where
+ * a minimal amount of work is done to move data around.
+ */
 long memory( long opc ){
 
 	//cout << "M\t" << opc << endl;
@@ -354,16 +386,31 @@ long memory( long opc ){
 	return old_opc;
 }
 
+/**
+ * Handles the passthrough work for R type instructions.
+ */
 void memory_R_TYPE(){
 	mw_bus[0]->IN().pullFrom(xm_alu_out);
 	mw_alu_out.latchFrom(mw_bus[0]->OUT());
 	sprintf(inst_output, "passthru");
 }
 
+/**
+ * For consistency this is here, but otherwise just calls memory_R_TYPE.
+ */
 void memory_I_TYPE(){
 	memory_R_TYPE();
 }
 
+/**
+ * No instructions perform work during the first clock tick of the writeback
+ * stage.  Technically, all work could be moved up, but to avoid data hazard
+ * issues, all work is done in the second stage.  This allows reads of the 
+ * register file to happen in the first clock tick, and then writes in the
+ * second. Generally, this means all instructions with dependencies on previous
+ * instructions which utilize the writeback stage, MUST include another NOP to
+ * ensure the register file is completely updated.
+ */
 void writeback( long opc ){
 
 	w_curr_opc = opc; // for second clock tick
@@ -375,6 +422,13 @@ void writeback( long opc ){
 	}
 }
 
+/**
+ * Handles the second clock tick for the fetch stage.  This function is complex,
+ * but mostly boils down to purging mis predictions, updating the BPT where
+ * appropriate, and incrementing on all positive cases (or if a branch was
+ * successfully predicted, then the increment is overridden in favor of
+ * replacing the PC).
+ */
 void fetch_second(){
 
 	bool bad_pc = false;
@@ -436,6 +490,12 @@ void fetch_second(){
 	}
 }
 
+/**
+ * Handles the second clock tick of the decode stage.  This stage only handles
+ * post-processing work for branch and jump instructions.  In particular, if
+ * a mis-prediction (or no prediction) was made, this stage will ensure the
+ * offset_alu will contain the EA for the branch/jump.
+ */
 void decode_second(){
 
 	int reg_rt = parse_rt( fd_ir );
@@ -471,13 +531,7 @@ void decode_second(){
 			sprintf(inst_output, "-");
 	}
 	
-	// If our prediction was bad, the current IR is bad; bubble with NOP 
-	// if( bpt_predicted != bpt_taken ){
-		// dx_bus[2]->IN().pullFrom( fd_nop );
-	// }
-	// else{
-		dx_bus[2]->IN().pullFrom( fd_ir );
-	// }
+	dx_bus[2]->IN().pullFrom( fd_ir );
 	dx_ir.latchFrom( dx_bus[2]->OUT() );
 	
 	// Grab the previous fetch's prediction state for the next decode phase
@@ -489,6 +543,10 @@ void decode_second(){
 	bpt_d_index = bpt_index;
 }
 
+/**
+ * Handles the second clock tick of the execute stage. This stage does nothing
+ * more than print out the results of the first execute stage for verification.
+ */
 void execute_second(){
 
 	switch(x_curr_opc){
@@ -508,6 +566,11 @@ void execute_second(){
 
 }
 
+/**
+ * Handles the second clock tick of the memory stage.  This stage only processes
+ * the load and store instructions, by moving the data into the appropriate
+ * location.
+ */
 void memory_second(){
 
 	switch( m_curr_opc ) {
@@ -530,6 +593,11 @@ void memory_second(){
 
 }
 
+/**
+ * Handles the second clock tick of the writeback stage.  This also terminates
+ * the program upon "decoding" of a HALT instruction.  Otherwise nothing
+ * special happens, just updating the register file.
+ */
 void writeback_second(){
 
 	reg_changed = false;
