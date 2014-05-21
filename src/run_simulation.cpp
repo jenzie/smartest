@@ -26,7 +26,8 @@ void run_simulation( char *instobj, char *dataobj ) {
 
 		// TODO: Check for PC overflow
 		if(false){
-			cout << endl << "MACHINE HALTED due to PC overflow" << endl << endl;
+			cout << endl << "MACHINE HALTED due to PC overflow" 
+				<< endl << endl;
 			done = true;
 			break;
 		}
@@ -36,6 +37,7 @@ void run_simulation( char *instobj, char *dataobj ) {
 	}
 	
 	if( halt_inst ) {
-		cout << endl << "MACHINE HALTED due to halt instruction" << endl << endl;
+		cout << endl << "MACHINE HALTED due to halt instruction" 
+			<< endl << endl;
 	}
 }
