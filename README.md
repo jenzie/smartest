@@ -43,7 +43,33 @@ stage. Below is an example output.  The values correspond to registers 1, 2, 3,
 and 4 respectively.
 
     Registers 15 20 35 00
+	
+BP Output
+---------
 
+The output for branch and jump instructions is rather archaic.  Below is an
+example output.
+
+    Read PC(05)     if R0!=0,PC<-EA NOP             NOP             NOP
+    No BPT Hit      fe0 != 0?       -               -               -
+    PC? B00<-PC @04 pc<-08          -               -               -
+
+A `PC+` means the PC register was incremented, whereas a `PC?` means the PC was
+purged (mis prediction).
+
+The `B00<-PC` is the Branch Prediction Table index 0 being updated with the
+current PC register.
+
+The `@04` means PC 4 is mapped to the entry specified, ie `B00<-PC`.
+
+Further, The second line of output for the Fetch stage may look like this in
+some cases:
+
+    PC? A:F, P:T
+	
+Here, the `A:F` refers to the actual branch result.  `P:T` refers to the predicted result of the branch.  `T` for "taken" and `F` for "not taken".
+	
+	
 BPT Statistics
 --------------
 
@@ -53,14 +79,13 @@ algorithm.  An example is provided below.
 
     BPT Statistics
     ==============
-    Predictions:    00
-    Failures:       00
-    Accuracy:       00%
-    Unique Branches:00
-    Branch Swapped: 00
-    Saturation:     0.00
+    Predictions:	63
+    Failures:	07
+    Accuracy:	89%
+    Branch Swaps:	00
+    Saturation:	1.00
 
-Saturation values <= 1 or below 1.5 are good, as larger values mean that more
+Saturation values of 1 are good, as larger values mean that more
 branch history is lost to new branch instructions.  This is caused by a BPT 
 that is too small, forcing the BP algorithm to swap out old branches for new 
 ones.
@@ -91,10 +116,12 @@ Format
 The input files follow the same format as the labs.
 
 Instruction object files, which contain read-only data for instruction exection,
-are named "inst.N", where N is some unique number.
+are named "prog.inst".
 
-Data object files, which full read/write data, are named "data.N", where N is
-the corresponding unique number of the instruction file.
+Data object files, which full read/write data, are named "prog.data".
+
+Some input files may also include a help file, named "prog.help", which are 
+simple files documenting the intended behavior of the program to be simulated.
 
 Location
 --------

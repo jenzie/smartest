@@ -7,6 +7,8 @@
 #include <cstdio>
 #include "includes.h"
 
+#define DEBUG_
+
 /**
  * Moves instructions down through the pipeline.
  */
@@ -34,7 +36,9 @@ void assemble() {
 	printf("%s%s\n", inst_total_output, inst_output);
 	Clock::tick();
 	
+	#ifdef DEBUG
 	printf("PC:%02lx\n", pc.value() );
+	#endif
 	
 	// Execute the second tick for each stage.
 	fetch_second();
@@ -49,16 +53,19 @@ void assemble() {
 	printf("%s%s\n", inst_total_output, inst_output);
 	Clock::tick();
 	
+	#ifdef DEBUG
 	printf("PC:%02lx\n", pc.value() );
 	
 	if(debug_msg[0] != 0)
 		printf("%s\n", debug_msg);
+	#endif
 	
 	if( reg_changed ){
 		printf("Registers %02lx %02lx %02lx %02lx\n",reg_file[0]->value(),
 			reg_file[1]->value(), reg_file[2]->value(), reg_file[3]->value());
 	}
 	
+	#ifdef DEBUG
 	if( bpt_update || bpt_d_update || bpt_hit || bpt_d_hit){
 		for(int i = 0; i < MAX_BPT; i++){
 			if(bpt_ibank[i] != -1)
@@ -69,6 +76,7 @@ void assemble() {
 		}
 		printf("\n");
 	}
+	#endif
 	
 	// Print BPT table
 	if( halt_inst == true ){
@@ -371,7 +379,9 @@ void fetch_second(){
 
 	bool bad_pc = false;
 	
+	#ifdef DEBUG
 	sprintf(debug_msg, "%s P:%d T:%d", debug_msg, bpt_d_predicted, bpt_d_taken);
+	#endif
 
 	// Actually fetch the next instruction.
 	// Bad PC, need to flush and replace with the incremented PC
