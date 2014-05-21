@@ -380,7 +380,8 @@ void fetch_second(){
 	bool bad_pc = false;
 	
 	#ifdef DEBUG
-	sprintf(debug_msg, "%s P:%d T:%d", debug_msg, bpt_d_predicted, bpt_d_taken);
+	sprintf(debug_msg, "%s P:%d T:%d", 
+		debug_msg, bpt_d_predicted, bpt_d_taken);
 	#endif
 
 	// Actually fetch the next instruction.

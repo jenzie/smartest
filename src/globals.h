@@ -14,8 +14,8 @@ extern const unsigned int DATA_BITS; // 12-bit unit size
 extern const unsigned int SIMM_BITS;
 extern const unsigned int MAX_BPT;
 
-extern bool done;		// is the simulation over?
-extern bool halt_inst;    // did we halt because of the halt instruction?
+extern bool done;			// is the simulation over?
+extern bool halt_inst;    	// did we halt because of the halt instruction?
 
 // Constant Registers
 extern StorageObject const_one;
