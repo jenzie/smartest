@@ -1,0 +1,9 @@
+smartest-addendum
+
+smartest-HW.pdf
+	
+smartest-HW_and_CU.docx
+	For the Register Transfer Language, subtraction was added and set less than was removed.
+	
+smartest-ISA.docx
+	For the Instruction Set, for the List of Instructions, subtraction was added and set less than was removed.
