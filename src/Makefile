@@ -1,5 +1,5 @@
 #
-# Created by gmakemake (Ubuntu Sep  7 2011) on Sun May 11 15:05:49 2014
+# Created by gmakemake (Ubuntu Sep  7 2011) on Tue May 20 23:45:43 2014
 #
 
 #
@@ -54,7 +54,7 @@ CCLIBFLAGS = $(LIBFLAGS)
 ########## End of flags from header.mak
 
 
-CPP_FILES =	branchprediction.cpp execute.cpp globals.cpp make_connections.cpp object_arrays.cpp run_simulation.cpp smartest.cpp utility.cpp
+CPP_FILES =	CPU.cpp branchprediction.cpp execute.cpp globals.cpp make_connections.cpp object_arrays.cpp run_simulation.cpp utility.cpp
 C_FILES =	
 PS_FILES =	
 S_FILES =	
@@ -67,22 +67,22 @@ OBJFILES =	branchprediction.o execute.o globals.o make_connections.o object_arra
 # Main targets
 #
 
-all:	smartest 
+all:	CPU 
 
-smartest:	smartest.o $(OBJFILES)
-	$(CXX) $(CXXFLAGS) -o smartest smartest.o $(OBJFILES) $(CCLIBFLAGS)
+CPU:	CPU.o $(OBJFILES)
+	$(CXX) $(CXXFLAGS) -o CPU CPU.o $(OBJFILES) $(CCLIBFLAGS)
 
 #
 # Dependencies
 #
 
+CPU.o:	globals.h includes.h prototypes.h
 branchprediction.o:	globals.h includes.h prototypes.h
 execute.o:	globals.h includes.h prototypes.h
 globals.o:	globals.h includes.h prototypes.h
 make_connections.o:	globals.h includes.h prototypes.h
 object_arrays.o:	globals.h includes.h prototypes.h
 run_simulation.o:	globals.h includes.h prototypes.h
-smartest.o:	globals.h includes.h prototypes.h
 utility.o:	globals.h includes.h prototypes.h
 
 #
@@ -95,7 +95,7 @@ archive.tgz:	$(SOURCEFILES) Makefile
 	tar cf - $(SOURCEFILES) Makefile | gzip > archive.tgz
 
 clean:
-	-/bin/rm $(OBJFILES) smartest.o core 2> /dev/null
+	-/bin/rm $(OBJFILES) CPU.o core 2> /dev/null
 
 realclean:        clean
-	-/bin/rm -rf smartest 
+	-/bin/rm -rf CPU 

@@ -1,0 +1,29 @@
+smartest-addendum
+smartest-HW.pdf
+1.	The X/M_B register was renamed to X/M_A, and the D/X_A register now connects
+ to X/M_A instead of the X/M_B register, when passing down to the next pipeline
+ stage.
+smartest-HW_and_CU.docx
+1.	In the “Register Transfer Language” section, subtraction (SUB) was added and
+ set-less-than (SLT) was removed. SLT was removed as it was unnecessary without
+ a branch-less-than (BLT) instruction.  It added up to five more cycles since
+ the Smartest pipeline does not support forwarding.
+1.	The "Registers" section was removed, as there are no physical registers
+ used by the Branch Prediction Table.  The control unit has all values stored
+ "within" itself in the code, in the form of arrays and control flag variables.
+ 
+2.	The “Operation” section and all sub-sections were dramatically simplified to
+ reflect the simplifications to the branch prediction control logic. Since the
+ majority of the physical hardware was removed and moved into the code, only the
+ high-level algorithm for the branch prediction is documented.
+smartest-ISA.docx
+2.	In the “List of Instructions” section, subtraction (SUB) was added and
+ set-less-than (SLT) was removed. SLT was removed as it was unnecessary without
+ a branch-less-than (BLT) instruction.  It added up to five more cycles since
+ our pipeline does not support forwarding.
+ 
+3.	The "Areas for Improvement" section was removed, as all the changes were
+ implemented.
+4.	The format for R-type instructions was modified so that the RS register is
+ first, the RT is second, and the RD is third.  The change was to allow easier
+ processing of selected registers.
